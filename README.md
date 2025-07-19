@@ -2,7 +2,7 @@
 <h1 align="center">Hey there, I'm Shahin Arab !
 
 <p align="center">
-  <a href="https://github.com/shahinarab78">
+  <a href="https://github.com/shaiinarab">
   </a>
 </p>
 
@@ -10,12 +10,11 @@
 
 ### 👨‍💻 About Me
 
-- 📝 I'm a **Student** based in **Shiraz,Iran**.
+- 📝 I'm a **Student** based in **Shiraz,Iran** @Zand Institute of higher education Zand.ac.ir .
 - 🚀 I'm passionate about building scalable web applications and exploring new technologies.
-- 🌱 I’m currently learning more about **AI/ML and Cloud Native technologies**.
-- 💬 Ask me about **React, Node.js, Python, or anything tech-related!**
-- 📫 How to reach me: **Shahinarab619@outlook.com**
-- ⚡ Fun fact: I can't stop listening to music for more than a hour.
+- 🌱 I’m currently learning more about **AI/ML and Pyton ** in @Kaggle and **Cyber Security( digital forensics )** in TryHackMe .
+- 📫 The way to reach me other than in your meditation is : **Shahinarab619@outlook.com**
+- ⚡ Fun fact ab me : I can't stop listening to music for more than a hour.
 
 ---
 
