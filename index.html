@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Shahin Arab — open-source builder working across Rust, Go, Python, TypeScript, AI systems, and developer tools.">
+  <title>Shahin Arab — Open Source Builder</title>
+  <style>
+    :root {
+      --bg: #080d18;
+      --panel: rgba(18, 28, 48, .78);
+      --line: rgba(160, 190, 255, .18);
+      --text: #eef4ff;
+      --muted: #aab7d0;
+      --blue: #72a7ff;
+      --cyan: #5ee7df;
+      --amber: #ffc870;
+      --max: 1120px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: radial-gradient(circle at 12% 0%, #172a53 0, transparent 33rem), radial-gradient(circle at 93% 28%, #123c4c 0, transparent 28rem), var(--bg);
+      font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: inherit; text-decoration: none; }
+    .shell { width: min(calc(100% - 2rem), var(--max)); margin: auto; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
+    .brand { font-weight: 800; letter-spacing: .02em; }
+    .brand span { color: var(--cyan); }
+    .links { display: flex; gap: 1rem; color: var(--muted); font-size: .94rem; }
+    .links a:hover { color: var(--text); }
+    .hero { min-height: 52vh; display: grid; grid-template-columns: 1.45fr .8fr; align-items: center; gap: 4rem; padding: 5.8rem 0 4.5rem; }
+    .eyebrow { color: var(--cyan); font-weight: 800; text-transform: uppercase; font-size: .75rem; letter-spacing: .16em; }
+    h1 { font-size: clamp(2.8rem, 7vw, 5.3rem); line-height: .98; letter-spacing: -.06em; margin: .9rem 0 1.25rem; max-width: 11ch; }
+    .lead { color: var(--muted); font-size: 1.13rem; max-width: 57ch; }
+    .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+    .button { display: inline-flex; align-items: center; gap: .45rem; padding: .72rem 1rem; border: 1px solid var(--line); border-radius: .65rem; font-weight: 700; transition: transform .2s, background .2s; }
+    .button.primary { background: linear-gradient(120deg, var(--blue), var(--cyan)); color: #07111e; border-color: transparent; }
+    .button:hover { transform: translateY(-2px); background: rgba(114, 167, 255, .12); }
+    .button.primary:hover { background: linear-gradient(120deg, #9ac1ff, #8ef7ef); }
+    .signal { padding: 1.4rem; border: 1px solid var(--line); border-radius: 1rem; background: linear-gradient(145deg, rgba(19, 36, 64, .9), rgba(10, 16, 29, .75)); box-shadow: 0 22px 70px rgba(0, 0, 0, .2); }
+    .signal h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); margin: 0 0 1rem; }
+    .metric { padding: .75rem 0; border-top: 1px solid var(--line); }
+    .metric:first-of-type { border-top: 0; }
+    .metric strong { display: block; color: var(--amber); font-size: 1.04rem; }
+    section { padding: 4.2rem 0; border-top: 1px solid var(--line); }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.7rem; }
+    h2 { margin: 0; font-size: clamp(1.65rem, 3.3vw, 2.35rem); letter-spacing: -.04em; }
+    .section-head p { margin: 0; max-width: 50ch; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .card { position: relative; overflow: hidden; min-height: 248px; padding: 1.45rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--panel); transition: transform .25s, border-color .25s; }
+    .card:hover { transform: translateY(-4px); border-color: rgba(114, 167, 255, .55); }
+    .card::before { content: ""; position: absolute; width: 14rem; height: 14rem; right: -8rem; top: -8rem; border-radius: 50%; background: radial-gradient(circle, rgba(94, 231, 223, .22), transparent 68%); }
+    .card h3 { position: relative; margin: 3.7rem 0 .55rem; font-size: 1.35rem; letter-spacing: -.025em; }
+    .card p { position: relative; color: var(--muted); margin: 0 0 1.2rem; }
+    .tags { position: relative; display: flex; flex-wrap: wrap; gap: .45rem; }
+    .tag { color: #bfd0ef; border: 1px solid var(--line); border-radius: 99rem; padding: .18rem .55rem; font-size: .75rem; }
+    .card-link { position: absolute; inset: 0; z-index: 2; }
+    .card .arrow { position: absolute; top: 1.2rem; right: 1.25rem; color: var(--cyan); font-size: 1.35rem; }
+    .practice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .practice article { padding: 1.25rem; border-left: 2px solid var(--cyan); background: rgba(12, 20, 36, .5); }
+    .practice h3 { margin: 0 0 .5rem; font-size: 1rem; }
+    .practice p { margin: 0; color: var(--muted); font-size: .94rem; }
+    footer { padding: 2rem 0 3rem; color: var(--muted); display: flex; justify-content: space-between; gap: 1rem; font-size: .9rem; }
+    @media (max-width: 760px) { .links { display: none; } .hero { grid-template-columns: 1fr; gap: 2rem; padding: 4.3rem 0; min-height: auto; } h1 { max-width: 12ch; } .grid, .practice { grid-template-columns: 1fr; } .section-head, footer { align-items: start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav aria-label="Main navigation">
+      <a class="brand" href="#top">SHAHIN<span>.</span>DEV</a>
+      <div class="links"><a href="#projects">Projects</a><a href="#approach">Approach</a><a href="https://github.com/Shaiinarab">GitHub</a></div>
+    </nav>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="intro-title">
+        <div>
+          <div class="eyebrow">Open-source builder · Shiraz, Iran</div>
+          <h1 id="intro-title">Systems, tools, and practical AI.</h1>
+          <p class="lead">I build focused software across <strong>Rust, Go, Python, and TypeScript</strong>—from edge gateways and developer tooling to operational platforms and learning projects.</p>
+          <div class="actions">
+            <a class="button primary" href="#projects">Explore selected work <span>↓</span></a>
+            <a class="button" href="https://github.com/Shaiinarab">View GitHub <span>↗</span></a>
+          </div>
+        </div>
+        <aside class="signal" aria-label="Current focus">
+          <h2>Current focus</h2>
+          <div class="metric"><strong>Reliable developer tools</strong><span>Command-line foundations, tests, and clean project context.</span></div>
+          <div class="metric"><strong>AI at the edge</strong><span>Resilient provider federation on Cloudflare Workers.</span></div>
+          <div class="metric"><strong>Products with real workflows</strong><span>Academy operations and full-stack commerce experiments.</span></div>
+        </aside>
+      </section>
+
+      <section id="projects" aria-labelledby="project-title">
+        <div class="section-head"><h2 id="project-title">Selected work</h2><p>A concise view of active, public repositories. Each project links to its source and current documentation.</p></div>
+        <div class="grid">
+          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Ararat-platform" aria-label="Open Ararat Platform repository"></a><span class="arrow">↗</span><h3>Ararat Platform</h3><p>A unified management platform for FC Ararat Academy staff, players, and members in Shiraz.</p><div class="tags"><span class="tag">Go</span><span class="tag">PocketBase</span><span class="tag">Management</span></div></article>
+          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Simorgh-edge-gateway" aria-label="Open Simorgh Edge Gateway repository"></a><span class="arrow">↗</span><h3>Simorgh Edge Gateway</h3><p>An agentic edge gateway exploring resilient AI-provider federation on Cloudflare Workers.</p><div class="tags"><span class="tag">TypeScript</span><span class="tag">Cloudflare Workers</span><span class="tag">AI Agents</span></div></article>
+          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Log-Sentinel" aria-label="Open Log-Sentinel repository"></a><span class="arrow">↗</span><h3>Log-Sentinel</h3><p>A Python CLI foundation for log ingestion and anomaly-detection workflows, with a reproducible test baseline.</p><div class="tags"><span class="tag">Python</span><span class="tag">CLI</span><span class="tag">Observability</span></div></article>
+          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/mashreghi_asil" aria-label="Open Luxury Perfume Shop repository"></a><span class="arrow">↗</span><h3>Luxury Perfume Shop</h3><p>A full-stack commerce experiment combining a Next.js client, Rust API, and WebAssembly scent package.</p><div class="tags"><span class="tag">Next.js</span><span class="tag">Rust</span><span class="tag">WebAssembly</span></div></article>
+          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Data-struct-and-Intro-to-algo-final-project" aria-label="Open Queue and Stack Simulation repository"></a><span class="arrow">↗</span><h3>Queue &amp; Stack Simulation</h3><p>A bilingual Python course project that demonstrates queue and stack systems through CLI and Tkinter interfaces.</p><div class="tags"><span class="tag">Python</span><span class="tag">Tkinter</span><span class="tag">Data Structures</span></div></article>
+          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Data_Structure_And_Intro_To_Algorithms.CLRS" aria-label="Open data structures coursework repository"></a><span class="arrow">↗</span><h3>Algorithms Coursework</h3><p>Python mini-homework solutions covering practical data structures and introductory algorithms.</p><div class="tags"><span class="tag">Python</span><span class="tag">Algorithms</span><span class="tag">Coursework</span></div></article>
+        </div>
+      </section>
+
+      <section id="approach" aria-labelledby="approach-title">
+        <div class="section-head"><h2 id="approach-title">How I work</h2><p>Projects improve through small, verifiable loops rather than broad, untested rewrites.</p></div>
+        <div class="practice">
+          <article><h3>01 — Establish the baseline</h3><p>Read the code, run the available checks, and make blockers visible before adding scope.</p></article>
+          <article><h3>02 — Ship a bounded improvement</h3><p>Turn one clear acceptance target into a reviewable, testable change.</p></article>
+          <article><h3>03 — Learn and iterate</h3><p>Capture evidence from checks and reviews, then feed it into the next focused story.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>© 2026 Shahin Arab</span><a href="https://github.com/Shaiinarab">github.com/Shaiinarab ↗</a></footer>
+  </div>
+</body>
+</html>
