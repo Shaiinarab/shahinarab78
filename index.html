@@ -4,17 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Shahin Arab — open-source builder working across Rust, Go, Python, TypeScript, AI systems, and developer tools.">
-  <title>Shahin Arab — Open Source Builder</title>
+  <meta name="theme-color" content="#080d18">
+  <title>Shahin Arab — Open-Source Builder</title>
   <style>
     :root {
       --bg: #080d18;
       --panel: rgba(18, 28, 48, .78);
+      --panel-strong: rgba(14, 23, 41, .94);
       --line: rgba(160, 190, 255, .18);
       --text: #eef4ff;
       --muted: #aab7d0;
       --blue: #72a7ff;
       --cyan: #5ee7df;
       --amber: #ffc870;
+      --green: #75e4a5;
       --max: 1120px;
     }
     * { box-sizing: border-box; }
@@ -26,30 +29,40 @@
       font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     a { color: inherit; text-decoration: none; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
     .shell { width: min(calc(100% - 2rem), var(--max)); margin: auto; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
-    .brand { font-weight: 800; letter-spacing: .02em; }
+    nav { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
+    .brand { font-weight: 800; letter-spacing: .02em; white-space: nowrap; }
     .brand span { color: var(--cyan); }
-    .links { display: flex; gap: 1rem; color: var(--muted); font-size: .94rem; }
+    .links { display: flex; flex-wrap: wrap; justify-content: end; gap: 1rem; color: var(--muted); font-size: .94rem; }
     .links a:hover { color: var(--text); }
-    .hero { min-height: 52vh; display: grid; grid-template-columns: 1.45fr .8fr; align-items: center; gap: 4rem; padding: 5.8rem 0 4.5rem; }
+    .hero { min-height: 58vh; display: grid; grid-template-columns: 1.3fr .9fr; align-items: center; gap: 4rem; padding: 5.8rem 0 4.5rem; }
     .eyebrow { color: var(--cyan); font-weight: 800; text-transform: uppercase; font-size: .75rem; letter-spacing: .16em; }
-    h1 { font-size: clamp(2.8rem, 7vw, 5.3rem); line-height: .98; letter-spacing: -.06em; margin: .9rem 0 1.25rem; max-width: 11ch; }
+    h1 { font-size: clamp(3rem, 7vw, 5.5rem); line-height: .98; letter-spacing: -.065em; margin: .9rem 0 1.25rem; max-width: 11ch; }
     .lead { color: var(--muted); font-size: 1.13rem; max-width: 57ch; }
     .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
-    .button { display: inline-flex; align-items: center; gap: .45rem; padding: .72rem 1rem; border: 1px solid var(--line); border-radius: .65rem; font-weight: 700; transition: transform .2s, background .2s; }
+    .button { display: inline-flex; align-items: center; gap: .45rem; padding: .72rem 1rem; border: 1px solid var(--line); border-radius: .65rem; font-weight: 700; transition: transform .2s, background .2s, border-color .2s; }
     .button.primary { background: linear-gradient(120deg, var(--blue), var(--cyan)); color: #07111e; border-color: transparent; }
-    .button:hover { transform: translateY(-2px); background: rgba(114, 167, 255, .12); }
+    .button:hover { transform: translateY(-2px); background: rgba(114, 167, 255, .12); border-color: rgba(114, 167, 255, .55); }
     .button.primary:hover { background: linear-gradient(120deg, #9ac1ff, #8ef7ef); }
-    .signal { padding: 1.4rem; border: 1px solid var(--line); border-radius: 1rem; background: linear-gradient(145deg, rgba(19, 36, 64, .9), rgba(10, 16, 29, .75)); box-shadow: 0 22px 70px rgba(0, 0, 0, .2); }
-    .signal h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); margin: 0 0 1rem; }
-    .metric { padding: .75rem 0; border-top: 1px solid var(--line); }
+    .signal { position: relative; min-height: 370px; overflow: hidden; padding: 1.4rem; border: 1px solid var(--line); border-radius: 1rem; background: linear-gradient(145deg, rgba(19, 36, 64, .95), rgba(10, 16, 29, .87)); box-shadow: 0 22px 70px rgba(0, 0, 0, .2); }
+    .signal::before, .signal::after { content: ""; position: absolute; border-radius: 999px; filter: blur(1px); pointer-events: none; }
+    .signal::before { width: 17rem; height: 17rem; right: -7rem; top: -7rem; border: 1px solid rgba(94, 231, 223, .26); box-shadow: 0 0 0 2.2rem rgba(94, 231, 223, .04), 0 0 0 4.5rem rgba(114, 167, 255, .035); }
+    .signal::after { width: 11rem; height: 11rem; left: -5rem; bottom: -5rem; background: radial-gradient(circle, rgba(114, 167, 255, .35), transparent 66%); }
+    .signal h2 { position: relative; font-size: .8rem; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); margin: 0 0 1rem; }
+    .signal-map { position: relative; height: 130px; margin: 1.1rem 0 1.3rem; background-image: linear-gradient(rgba(94, 231, 223, .13) 1px, transparent 1px), linear-gradient(90deg, rgba(94, 231, 223, .13) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 76%, transparent); }
+    .orbit { position: absolute; border: 1px solid rgba(114, 167, 255, .38); border-radius: 999px; }
+    .orbit.one { inset: 12px 32px 18px 12px; transform: rotate(-14deg); }
+    .orbit.two { inset: 31px 9px 1px 58px; transform: rotate(19deg); border-color: rgba(94, 231, 223, .36); }
+    .node { position: absolute; width: .7rem; height: .7rem; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 .25rem rgba(94, 231, 223, .12), 0 0 1.3rem rgba(94, 231, 223, .8); }
+    .node.a { top: 35px; left: 41%; }.node.b { right: 16%; top: 66px; background: var(--amber); box-shadow: 0 0 0 .25rem rgba(255, 200, 112, .12), 0 0 1.3rem rgba(255, 200, 112, .65); }.node.c { bottom: 23px; left: 23%; background: var(--blue); }
+    .metric { position: relative; padding: .75rem 0; border-top: 1px solid var(--line); }
     .metric:first-of-type { border-top: 0; }
     .metric strong { display: block; color: var(--amber); font-size: 1.04rem; }
     section { padding: 4.2rem 0; border-top: 1px solid var(--line); }
     .section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.7rem; }
-    h2 { margin: 0; font-size: clamp(1.65rem, 3.3vw, 2.35rem); letter-spacing: -.04em; }
-    .section-head p { margin: 0; max-width: 50ch; color: var(--muted); }
+    h2 { margin: 0; font-size: clamp(1.7rem, 3.3vw, 2.35rem); letter-spacing: -.04em; }
+    .section-head p { margin: 0; max-width: 52ch; color: var(--muted); }
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
     .card { position: relative; overflow: hidden; min-height: 248px; padding: 1.45rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--panel); transition: transform .25s, border-color .25s; }
     .card:hover { transform: translateY(-4px); border-color: rgba(114, 167, 255, .55); }
@@ -60,19 +73,43 @@
     .tag { color: #bfd0ef; border: 1px solid var(--line); border-radius: 99rem; padding: .18rem .55rem; font-size: .75rem; }
     .card-link { position: absolute; inset: 0; z-index: 2; }
     .card .arrow { position: absolute; top: 1.2rem; right: 1.25rem; color: var(--cyan); font-size: 1.35rem; }
-    .practice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .practice article { padding: 1.25rem; border-left: 2px solid var(--cyan); background: rgba(12, 20, 36, .5); }
-    .practice h3 { margin: 0 0 .5rem; font-size: 1rem; }
-    .practice p { margin: 0; color: var(--muted); font-size: .94rem; }
+    .case-card { display: grid; grid-template-columns: 1.3fr .7fr; gap: 1.25rem; padding: 1.6rem; border: 1px solid rgba(94, 231, 223, .36); border-radius: 1rem; background: linear-gradient(135deg, rgba(13, 32, 53, .95), rgba(14, 21, 38, .92)); }
+    .case-card h3 { margin: .35rem 0 .7rem; font-size: 1.5rem; letter-spacing: -.03em; }
+    .case-card p { color: var(--muted); margin: 0; }
+    .proof-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; align-content: center; }
+    .proof-list li { padding: .75rem .85rem; color: #c7d7f2; border-radius: .65rem; background: rgba(114, 167, 255, .08); border: 1px solid rgba(114, 167, 255, .13); font-size: .9rem; }
+    .proof-list span { display: block; color: var(--green); font-weight: 800; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+    .resume { display: grid; grid-template-columns: .75fr 1.25fr; gap: 1rem; }
+    .resume-aside, .resume-main { border: 1px solid var(--line); border-radius: 1rem; padding: 1.45rem; background: var(--panel); }
+    .resume-aside h3, .resume-main h3 { margin: 0 0 .8rem; font-size: 1rem; color: var(--cyan); text-transform: uppercase; letter-spacing: .1em; }
+    .resume-aside p, .resume-main p { color: var(--muted); margin: 0; }
+    .skill-group { padding: 1rem 0; border-top: 1px solid var(--line); }
+    .skill-group:first-of-type { border-top: 0; padding-top: 0; }
+    .skill-group strong { display: block; margin-bottom: .45rem; }
+    .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .evidence-grid article { padding: 1.25rem; border-left: 2px solid var(--cyan); background: rgba(12, 20, 36, .5); }
+    .evidence-grid h3 { margin: 0 0 .5rem; font-size: 1rem; }
+    .evidence-grid p { margin: 0; color: var(--muted); font-size: .94rem; }
+    .lab { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 1.6rem; border: 1px solid var(--line); border-radius: 1rem; background: linear-gradient(120deg, rgba(114, 167, 255, .12), rgba(94, 231, 223, .05)); }
+    .lab p { margin: .5rem 0 0; color: var(--muted); max-width: 62ch; }
+    .status { display: inline-flex; gap: .5rem; align-items: center; color: #c8f5d8; font-size: .84rem; font-weight: 700; white-space: nowrap; }
+    .status::before { content: ""; width: .55rem; height: .55rem; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 .25rem rgba(117, 228, 165, .12); }
     footer { padding: 2rem 0 3rem; color: var(--muted); display: flex; justify-content: space-between; gap: 1rem; font-size: .9rem; }
-    @media (max-width: 760px) { .links { display: none; } .hero { grid-template-columns: 1fr; gap: 2rem; padding: 4.3rem 0; min-height: auto; } h1 { max-width: 12ch; } .grid, .practice { grid-template-columns: 1fr; } .section-head, footer { align-items: start; flex-direction: column; } }
+    @media (max-width: 760px) {
+      .links { display: none; }
+      .hero, .resume, .case-card { grid-template-columns: 1fr; gap: 2rem; padding: 4.3rem 0; min-height: auto; }
+      .case-card { padding: 1.3rem; }
+      h1 { max-width: 12ch; }
+      .grid, .evidence-grid { grid-template-columns: 1fr; }
+      .section-head, footer, .lab { align-items: start; flex-direction: column; }
+    }
   </style>
 </head>
 <body>
   <div class="shell">
     <nav aria-label="Main navigation">
       <a class="brand" href="#top">SHAHIN<span>.</span>DEV</a>
-      <div class="links"><a href="#projects">Projects</a><a href="#approach">Approach</a><a href="https://github.com/Shaiinarab">GitHub</a></div>
+      <div class="links"><a href="#projects">Projects</a><a href="#resume">Résumé</a><a href="#evidence">Evidence</a><a href="#lab">AI Lab</a><a href="https://github.com/Shaiinarab">GitHub</a></div>
     </nav>
 
     <main id="top">
@@ -83,36 +120,61 @@
           <p class="lead">I build focused software across <strong>Rust, Go, Python, and TypeScript</strong>—from edge gateways and developer tooling to operational platforms and learning projects.</p>
           <div class="actions">
             <a class="button primary" href="#projects">Explore selected work <span>↓</span></a>
+            <a class="button" href="data/resume.public.json" download>Download public résumé data <span>↧</span></a>
             <a class="button" href="https://github.com/Shaiinarab">View GitHub <span>↗</span></a>
           </div>
         </div>
-        <aside class="signal" aria-label="Current focus">
+        <aside class="signal" aria-label="Current engineering focus">
           <h2>Current focus</h2>
+          <div class="signal-map" aria-hidden="true"><span class="orbit one"></span><span class="orbit two"></span><span class="node a"></span><span class="node b"></span><span class="node c"></span></div>
           <div class="metric"><strong>Reliable developer tools</strong><span>Command-line foundations, tests, and clean project context.</span></div>
-          <div class="metric"><strong>AI at the edge</strong><span>Resilient provider federation on Cloudflare Workers.</span></div>
+          <div class="metric"><strong>AI at the edge</strong><span>Resilient provider federation and privacy-aware signals on Cloudflare Workers.</span></div>
           <div class="metric"><strong>Products with real workflows</strong><span>Academy operations and full-stack commerce experiments.</span></div>
         </aside>
       </section>
 
       <section id="projects" aria-labelledby="project-title">
-        <div class="section-head"><h2 id="project-title">Selected work</h2><p>A concise view of active, public repositories. Each project links to its source and current documentation.</p></div>
-        <div class="grid">
+        <div class="section-head"><h2 id="project-title">Selected work</h2><p>A concise view of active, public repositories. Each project links to source, documentation, or a verified public surface.</p></div>
+        <article class="case-card">
+          <div>
+            <div class="eyebrow">Evidence-backed case study</div>
+            <h3>RepoPulse</h3>
+            <p>A minimalist Cloudflare Worker that verifies signed GitHub webhook deliveries and exposes a privacy-filtered public activity signal. It is designed to surface engineering activity without retaining raw webhook payloads or naming private repositories.</p>
+            <div class="actions"><a class="button primary" href="https://github.com/Shaiinarab/repopulse">View source <span>↗</span></a><a class="button" href="https://repopulse.shahino3ozone1353.workers.dev/status">Open live status <span>↗</span></a></div>
+          </div>
+          <ul class="proof-list">
+            <li><span>Security model</span>Signed delivery verification before parsing.</li>
+            <li><span>Privacy boundary</span>Public output excludes private repository names.</li>
+            <li><span>Delivery</span>Live public status endpoint with compact activity snapshots.</li>
+          </ul>
+        </article>
+        <div class="grid" style="margin-top:1rem">
           <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Ararat-platform" aria-label="Open Ararat Platform repository"></a><span class="arrow">↗</span><h3>Ararat Platform</h3><p>A unified management platform for FC Ararat Academy staff, players, and members in Shiraz.</p><div class="tags"><span class="tag">Go</span><span class="tag">PocketBase</span><span class="tag">Management</span></div></article>
           <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Simorgh-edge-gateway" aria-label="Open Simorgh Edge Gateway repository"></a><span class="arrow">↗</span><h3>Simorgh Edge Gateway</h3><p>An agentic edge gateway exploring resilient AI-provider federation on Cloudflare Workers.</p><div class="tags"><span class="tag">TypeScript</span><span class="tag">Cloudflare Workers</span><span class="tag">AI Agents</span></div></article>
           <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Log-Sentinel" aria-label="Open Log-Sentinel repository"></a><span class="arrow">↗</span><h3>Log-Sentinel</h3><p>A Python CLI foundation for log ingestion and anomaly-detection workflows, with a reproducible test baseline.</p><div class="tags"><span class="tag">Python</span><span class="tag">CLI</span><span class="tag">Observability</span></div></article>
           <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/mashreghi_asil" aria-label="Open Luxury Perfume Shop repository"></a><span class="arrow">↗</span><h3>Luxury Perfume Shop</h3><p>A full-stack commerce experiment combining a Next.js client, Rust API, and WebAssembly scent package.</p><div class="tags"><span class="tag">Next.js</span><span class="tag">Rust</span><span class="tag">WebAssembly</span></div></article>
-          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Data-struct-and-Intro-to-algo-final-project" aria-label="Open Queue and Stack Simulation repository"></a><span class="arrow">↗</span><h3>Queue &amp; Stack Simulation</h3><p>A bilingual Python course project that demonstrates queue and stack systems through CLI and Tkinter interfaces.</p><div class="tags"><span class="tag">Python</span><span class="tag">Tkinter</span><span class="tag">Data Structures</span></div></article>
-          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Data_Structure_And_Intro_To_Algorithms.CLRS" aria-label="Open data structures coursework repository"></a><span class="arrow">↗</span><h3>Algorithms Coursework</h3><p>Python mini-homework solutions covering practical data structures and introductory algorithms.</p><div class="tags"><span class="tag">Python</span><span class="tag">Algorithms</span><span class="tag">Coursework</span></div></article>
         </div>
       </section>
 
-      <section id="approach" aria-labelledby="approach-title">
-        <div class="section-head"><h2 id="approach-title">How I work</h2><p>Projects improve through small, verifiable loops rather than broad, untested rewrites.</p></div>
-        <div class="practice">
-          <article><h3>01 — Establish the baseline</h3><p>Read the code, run the available checks, and make blockers visible before adding scope.</p></article>
-          <article><h3>02 — Ship a bounded improvement</h3><p>Turn one clear acceptance target into a reviewable, testable change.</p></article>
-          <article><h3>03 — Learn and iterate</h3><p>Capture evidence from checks and reviews, then feed it into the next focused story.</p></article>
+      <section id="resume" aria-labelledby="resume-title">
+        <div class="section-head"><h2 id="resume-title">Public résumé snapshot</h2><p>A deliberately compact, machine-readable profile. It contains only reviewed public-safe information and is versioned with this portfolio.</p></div>
+        <div class="resume">
+          <aside class="resume-aside"><h3>Positioning</h3><p>Open-source builder focused on practical systems, edge engineering, and developer tools.</p><div class="actions"><a class="button" href="data/resume.public.json" download>Get JSON résumé <span>↧</span></a></div></aside>
+          <div class="resume-main"><h3>Capabilities</h3><div class="skill-group"><strong>Systems and backend development</strong><p>Rust · Go · Python · TypeScript</p></div><div class="skill-group"><strong>Edge and developer tooling</strong><p>Cloudflare Workers · CLI · Observability · AI systems</p></div><div class="skill-group"><strong>Working method</strong><p>Establish a baseline, ship a bounded improvement, and capture verifiable evidence before extending scope.</p></div></div>
         </div>
+      </section>
+
+      <section id="evidence" aria-labelledby="evidence-title">
+        <div class="section-head"><h2 id="evidence-title">How I validate work</h2><p>Portfolio claims should remain small, inspectable, and connected to actual public evidence—not inflated summaries.</p></div>
+        <div class="evidence-grid">
+          <article><h3>Source-backed claims</h3><p>Every public case study starts from a repository, documentation page, or live endpoint that can be reviewed.</p></article>
+          <article><h3>Privacy-aware delivery</h3><p>Public signals should prove useful engineering behavior while minimizing data exposure and avoiding sensitive operational details.</p></article>
+          <article><h3>Reviewable iterations</h3><p>Changes move through small checkpoints: local validation, preview review, and only then public promotion.</p></article>
+        </div>
+      </section>
+
+      <section id="lab" aria-labelledby="lab-title">
+        <div class="lab"><div><h2 id="lab-title">Role-Fit Lab</h2><p>A private-first, explainable demonstration is being prepared on Hugging Face. It will compare a role description against a small public project-evidence dataset and explain shared technical themes. It will not rank candidates, make hiring predictions, or use private résumé material.</p></div><span class="status">In active build</span></div>
       </section>
     </main>
 
