@@ -3,182 +3,229 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Shahin Arab — open-source builder working across Rust, Go, Python, TypeScript, AI systems, and developer tools.">
-  <meta name="theme-color" content="#080d18">
-  <title>Shahin Arab — Open-Source Builder</title>
-  <style>
-    :root {
-      --bg: #080d18;
-      --panel: rgba(18, 28, 48, .78);
-      --panel-strong: rgba(14, 23, 41, .94);
-      --line: rgba(160, 190, 255, .18);
-      --text: #eef4ff;
-      --muted: #aab7d0;
-      --blue: #72a7ff;
-      --cyan: #5ee7df;
-      --amber: #ffc870;
-      --green: #75e4a5;
-      --max: 1120px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      color: var(--text);
-      background: radial-gradient(circle at 12% 0%, #172a53 0, transparent 33rem), radial-gradient(circle at 93% 28%, #123c4c 0, transparent 28rem), var(--bg);
-      font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    a:focus-visible, button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
-    .shell { width: min(calc(100% - 2rem), var(--max)); margin: auto; }
-    nav { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
-    .brand { font-weight: 800; letter-spacing: .02em; white-space: nowrap; }
-    .brand span { color: var(--cyan); }
-    .links { display: flex; flex-wrap: wrap; justify-content: end; gap: 1rem; color: var(--muted); font-size: .94rem; }
-    .links a:hover { color: var(--text); }
-    .hero { min-height: 58vh; display: grid; grid-template-columns: 1.3fr .9fr; align-items: center; gap: 4rem; padding: 5.8rem 0 4.5rem; }
-    .eyebrow { color: var(--cyan); font-weight: 800; text-transform: uppercase; font-size: .75rem; letter-spacing: .16em; }
-    h1 { font-size: clamp(3rem, 7vw, 5.5rem); line-height: .98; letter-spacing: -.065em; margin: .9rem 0 1.25rem; max-width: 11ch; }
-    .lead { color: var(--muted); font-size: 1.13rem; max-width: 57ch; }
-    .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
-    .button { display: inline-flex; align-items: center; gap: .45rem; padding: .72rem 1rem; border: 1px solid var(--line); border-radius: .65rem; font-weight: 700; transition: transform .2s, background .2s, border-color .2s; }
-    .button.primary { background: linear-gradient(120deg, var(--blue), var(--cyan)); color: #07111e; border-color: transparent; }
-    .button:hover { transform: translateY(-2px); background: rgba(114, 167, 255, .12); border-color: rgba(114, 167, 255, .55); }
-    .button.primary:hover { background: linear-gradient(120deg, #9ac1ff, #8ef7ef); }
-    .signal { position: relative; min-height: 370px; overflow: hidden; padding: 1.4rem; border: 1px solid var(--line); border-radius: 1rem; background: linear-gradient(145deg, rgba(19, 36, 64, .95), rgba(10, 16, 29, .87)); box-shadow: 0 22px 70px rgba(0, 0, 0, .2); }
-    .signal::before, .signal::after { content: ""; position: absolute; border-radius: 999px; filter: blur(1px); pointer-events: none; }
-    .signal::before { width: 17rem; height: 17rem; right: -7rem; top: -7rem; border: 1px solid rgba(94, 231, 223, .26); box-shadow: 0 0 0 2.2rem rgba(94, 231, 223, .04), 0 0 0 4.5rem rgba(114, 167, 255, .035); }
-    .signal::after { width: 11rem; height: 11rem; left: -5rem; bottom: -5rem; background: radial-gradient(circle, rgba(114, 167, 255, .35), transparent 66%); }
-    .signal h2 { position: relative; font-size: .8rem; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); margin: 0 0 1rem; }
-    .signal-map { position: relative; height: 130px; margin: 1.1rem 0 1.3rem; background-image: linear-gradient(rgba(94, 231, 223, .13) 1px, transparent 1px), linear-gradient(90deg, rgba(94, 231, 223, .13) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 76%, transparent); }
-    .orbit { position: absolute; border: 1px solid rgba(114, 167, 255, .38); border-radius: 999px; }
-    .orbit.one { inset: 12px 32px 18px 12px; transform: rotate(-14deg); }
-    .orbit.two { inset: 31px 9px 1px 58px; transform: rotate(19deg); border-color: rgba(94, 231, 223, .36); }
-    .node { position: absolute; width: .7rem; height: .7rem; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 .25rem rgba(94, 231, 223, .12), 0 0 1.3rem rgba(94, 231, 223, .8); }
-    .node.a { top: 35px; left: 41%; }.node.b { right: 16%; top: 66px; background: var(--amber); box-shadow: 0 0 0 .25rem rgba(255, 200, 112, .12), 0 0 1.3rem rgba(255, 200, 112, .65); }.node.c { bottom: 23px; left: 23%; background: var(--blue); }
-    .metric { position: relative; padding: .75rem 0; border-top: 1px solid var(--line); }
-    .metric:first-of-type { border-top: 0; }
-    .metric strong { display: block; color: var(--amber); font-size: 1.04rem; }
-    section { padding: 4.2rem 0; border-top: 1px solid var(--line); }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.7rem; }
-    h2 { margin: 0; font-size: clamp(1.7rem, 3.3vw, 2.35rem); letter-spacing: -.04em; }
-    .section-head p { margin: 0; max-width: 52ch; color: var(--muted); }
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-    .card { position: relative; overflow: hidden; min-height: 248px; padding: 1.45rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--panel); transition: transform .25s, border-color .25s; }
-    .card:hover { transform: translateY(-4px); border-color: rgba(114, 167, 255, .55); }
-    .card::before { content: ""; position: absolute; width: 14rem; height: 14rem; right: -8rem; top: -8rem; border-radius: 50%; background: radial-gradient(circle, rgba(94, 231, 223, .22), transparent 68%); }
-    .card h3 { position: relative; margin: 3.7rem 0 .55rem; font-size: 1.35rem; letter-spacing: -.025em; }
-    .card p { position: relative; color: var(--muted); margin: 0 0 1.2rem; }
-    .tags { position: relative; display: flex; flex-wrap: wrap; gap: .45rem; }
-    .tag { color: #bfd0ef; border: 1px solid var(--line); border-radius: 99rem; padding: .18rem .55rem; font-size: .75rem; }
-    .card-link { position: absolute; inset: 0; z-index: 2; }
-    .card .arrow { position: absolute; top: 1.2rem; right: 1.25rem; color: var(--cyan); font-size: 1.35rem; }
-    .case-card { display: grid; grid-template-columns: 1.3fr .7fr; gap: 1.25rem; padding: 1.6rem; border: 1px solid rgba(94, 231, 223, .36); border-radius: 1rem; background: linear-gradient(135deg, rgba(13, 32, 53, .95), rgba(14, 21, 38, .92)); }
-    .case-card h3 { margin: .35rem 0 .7rem; font-size: 1.5rem; letter-spacing: -.03em; }
-    .case-card p { color: var(--muted); margin: 0; }
-    .proof-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; align-content: center; }
-    .proof-list li { padding: .75rem .85rem; color: #c7d7f2; border-radius: .65rem; background: rgba(114, 167, 255, .08); border: 1px solid rgba(114, 167, 255, .13); font-size: .9rem; }
-    .proof-list span { display: block; color: var(--green); font-weight: 800; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
-    .resume { display: grid; grid-template-columns: .75fr 1.25fr; gap: 1rem; }
-    .resume-aside, .resume-main { border: 1px solid var(--line); border-radius: 1rem; padding: 1.45rem; background: var(--panel); }
-    .resume-aside h3, .resume-main h3 { margin: 0 0 .8rem; font-size: 1rem; color: var(--cyan); text-transform: uppercase; letter-spacing: .1em; }
-    .resume-aside p, .resume-main p { color: var(--muted); margin: 0; }
-    .skill-group { padding: 1rem 0; border-top: 1px solid var(--line); }
-    .skill-group:first-of-type { border-top: 0; padding-top: 0; }
-    .skill-group strong { display: block; margin-bottom: .45rem; }
-    .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .evidence-grid article { padding: 1.25rem; border-left: 2px solid var(--cyan); background: rgba(12, 20, 36, .5); }
-    .evidence-grid h3 { margin: 0 0 .5rem; font-size: 1rem; }
-    .evidence-grid p { margin: 0; color: var(--muted); font-size: .94rem; }
-    .lab { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 1.6rem; border: 1px solid var(--line); border-radius: 1rem; background: linear-gradient(120deg, rgba(114, 167, 255, .12), rgba(94, 231, 223, .05)); }
-    .lab p { margin: .5rem 0 0; color: var(--muted); max-width: 62ch; }
-    .status { display: inline-flex; gap: .5rem; align-items: center; color: #c8f5d8; font-size: .84rem; font-weight: 700; white-space: nowrap; }
-    .status::before { content: ""; width: .55rem; height: .55rem; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 .25rem rgba(117, 228, 165, .12); }
-    footer { padding: 2rem 0 3rem; color: var(--muted); display: flex; justify-content: space-between; gap: 1rem; font-size: .9rem; }
-    @media (max-width: 760px) {
-      .links { display: none; }
-      .hero, .resume, .case-card { grid-template-columns: 1fr; gap: 2rem; padding: 4.3rem 0; min-height: auto; }
-      .case-card { padding: 1.3rem; }
-      h1 { max-width: 12ch; }
-      .grid, .evidence-grid { grid-template-columns: 1fr; }
-      .section-head, footer, .lab { align-items: start; flex-direction: column; }
-    }
-  </style>
+  <title>Shahin Arab — Repo Hub · Systems, Tools &amp; Practical AI</title>
+  <meta name="description" content="The front door to every public repository by Shahin Arab — searchable, filtered, and synced live from the GitHub API. Rust, Go, Python, TypeScript, edge tooling and more.">
+  <meta name="author" content="Shahin Arab">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#04070e">
+  <link rel="canonical" href="https://shaiinarab.github.io/shahinarab78/">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Shahin://HUB">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://shaiinarab.github.io/shahinarab78/">
+  <meta property="og:title" content="Shahin Arab — Repo Hub">
+  <meta property="og:description" content="Every public repo. One signal. Synced live from the GitHub API.">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/211481146?v=4&amp;s=600">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="https://avatars.githubusercontent.com/u/211481146?v=4&amp;s=600">
+  <meta name="twitter:title" content="Shahin Arab — Repo Hub">
+  <meta name="twitter:description" content="Every public repo. One signal. Synced live from the GitHub API.">
+
+  <!-- Warm the GitHub API connection before JS boots -->
+  <link rel="preconnect" href="https://api.github.com" crossorigin>
+  <link rel="dns-prefetch" href="https://api.github.com">
+
+  <!-- Favicon (inline SVG, zero requests) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060a12'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='%2300e5ff' stroke-width='2' opacity='.5'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='28' font-weight='bold' fill='%2300e5ff' text-anchor='middle'%3E%3E_%3C/text%3E%3C/svg%3E">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Shahin Arab",
+    "url": "https://shaiinarab.github.io/shahinarab78/",
+    "sameAs": [
+      "https://github.com/Shaiinarab",
+      "https://www.linkedin.com/in/shaiinarab/"
+    ],
+    "homeLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": "Shiraz", "addressCountry": "IR" } },
+    "knowsAbout": ["Rust", "Go", "Python", "TypeScript", "Cloudflare Workers", "Cybersecurity", "GPU Computing"]
+  }
+  </script>
+
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/app.js" defer></script>
 </head>
 <body>
-  <div class="shell">
-    <nav aria-label="Main navigation">
-      <a class="brand" href="#top">SHAHIN<span>.</span>DEV</a>
-      <div class="links"><a href="#projects">Projects</a><a href="#resume">Résumé</a><a href="#evidence">Evidence</a><a href="#lab">AI Lab</a><a href="https://github.com/Shaiinarab">GitHub</a></div>
-    </nav>
+  <div class="fx" aria-hidden="true"></div>
 
-    <main id="top">
-      <section class="hero" aria-labelledby="intro-title">
+  <header class="nav" role="banner">
+    <div class="shell nav-row">
+      <a class="brand mono" href="#top">SHAHIN<span class="pink">://</span>HUB</a>
+      <nav aria-label="Sections" class="nav-links">
+        <a href="#featured">Featured</a>
+        <a href="#directory">All repos</a>
+        <a href="#demos">Live demos</a>
+        <a href="#connect">Connect</a>
+      </nav>
+      <a class="btn btn-ghost btn-sm" href="https://github.com/Shaiinarab" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" class="ic" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============ HERO ============ -->
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy" data-reveal>
+        <p class="eyebrow mono">// REPO DIRECTORY · SYNCED LIVE FROM GITHUB</p>
+        <h1 id="hero-title" class="display">Shahin&nbsp;<span class="grad">Arab</span></h1>
+        <p class="type-line mono" aria-live="off"><span id="typed"></span><span class="caret" aria-hidden="true"></span></p>
+        <p class="lead">
+          Systems, tools &amp; practical AI — written across
+          <strong>Rust, Go, Python and TypeScript</strong>.
+          This page is the front door to every public repository:
+          searchable, filtered, and refreshed straight from the GitHub API every time you visit.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#directory">Browse all repositories <span aria-hidden="true">↓</span></a>
+          <a class="btn btn-ghost" href="#featured">Featured work</a>
+        </div>
+        <dl class="stats" aria-label="GitHub account stats">
+          <div><dt>Public repos</dt><dd class="mono" data-stat="repos">—</dd></div>
+          <div><dt>Listed here</dt><dd class="mono" data-stat="listed">—</dd></div>
+          <div><dt>Languages</dt><dd class="mono" data-stat="langs">—</dd></div>
+          <div><dt>Followers</dt><dd class="mono" data-stat="followers">—</dd></div>
+        </dl>
+      </div>
+
+      <aside class="terminal" data-reveal aria-label="Live directory status">
+        <div class="term-bar" aria-hidden="true">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="term-title mono">shahin@hub: ~</span>
+        </div>
+        <pre class="term-body mono"><span class="cmd">shahin@hub:~$ whoami</span>
+<span class="out">&gt; Shahin Arab — systems tinkerer · Shiraz 🇮🇷</span>
+<span class="cmd">shahin@hub:~$ ls ~/repos | wc -l</span>
+<span class="out">&gt; <span data-slot="repo-count">…</span> public repositories listed</span>
+<span class="cmd">shahin@hub:~$ sync --with api.github.com</span>
+<span class="out">&gt; <span data-slot="sync-status" class="dim">connecting…</span></span>
+<span class="cmd blink" aria-hidden="true">▊</span></pre>
+      </aside>
+    </section>
+
+    <!-- ============ FEATURED ============ -->
+    <section id="featured" class="shell section" aria-labelledby="featured-title">
+      <div class="sec-head" data-reveal>
         <div>
-          <div class="eyebrow">Open-source builder · Shiraz, Iran</div>
-          <h1 id="intro-title">Systems, tools, and practical AI.</h1>
-          <p class="lead">I build focused software across <strong>Rust, Go, Python, and TypeScript</strong>—from edge gateways and developer tooling to operational platforms and learning projects.</p>
-          <div class="actions">
-            <a class="button primary" href="#projects">Explore selected work <span>↓</span></a>
-            <a class="button" href="data/resume.public.json" download>Download public résumé data <span>↧</span></a>
-            <a class="button" href="https://github.com/Shaiinarab">View GitHub <span>↗</span></a>
-          </div>
+          <p class="eyebrow mono">// HAND-PICKED SIGNALS</p>
+          <h2 id="featured-title">Featured repositories</h2>
         </div>
-        <aside class="signal" aria-label="Current engineering focus">
-          <h2>Current focus</h2>
-          <div class="signal-map" aria-hidden="true"><span class="orbit one"></span><span class="orbit two"></span><span class="node a"></span><span class="node b"></span><span class="node c"></span></div>
-          <div class="metric"><strong>Reliable developer tools</strong><span>Command-line foundations, tests, and clean project context.</span></div>
-          <div class="metric"><strong>AI at the edge</strong><span>Resilient provider federation and privacy-aware signals on Cloudflare Workers.</span></div>
-          <div class="metric"><strong>Products with real workflows</strong><span>Academy operations and full-stack commerce experiments.</span></div>
-        </aside>
-      </section>
-
-      <section id="projects" aria-labelledby="project-title">
-        <div class="section-head"><h2 id="project-title">Selected work</h2><p>A concise view of active, public repositories. Each project links to source, documentation, or a verified public surface.</p></div>
-        <article class="case-card">
-          <div>
-            <div class="eyebrow">Evidence-backed case study</div>
-            <h3>RepoPulse</h3>
-            <p>A minimalist Cloudflare Worker that verifies signed GitHub webhook deliveries and exposes a privacy-filtered public activity signal. It is designed to surface engineering activity without retaining raw webhook payloads or naming private repositories.</p>
-            <div class="actions"><a class="button primary" href="https://github.com/Shaiinarab/repopulse">View source <span>↗</span></a><a class="button" href="https://repopulse.shahino3ozone1353.workers.dev/status">Open live status <span>↗</span></a></div>
-          </div>
-          <ul class="proof-list">
-            <li><span>Security model</span>Signed delivery verification before parsing.</li>
-            <li><span>Privacy boundary</span>Public output excludes private repository names.</li>
-            <li><span>Delivery</span>Live public status endpoint with compact activity snapshots.</li>
-          </ul>
+        <p>The builds that best show how I work: small scope, real workflows, verifiable results.</p>
+      </div>
+      <div class="featured-grid">
+        <article class="feat-card" data-reveal>
+          <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>TypeScript · Cloudflare Workers</div>
+          <h3><a href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">RepoPulse <span class="arrow" aria-hidden="true">↗</span></a></h3>
+          <p>Signed GitHub-webhook activity signal with a privacy-filtered public status feed — engineering activity without retaining raw payloads or naming private repos.</p>
+          <div class="tags"><span class="tag">Webhooks</span><span class="tag">Privacy-first</span><span class="tag">Workers</span></div>
+          <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">Source</a><a class="btn btn-sm btn-ghost" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener">Live status ↗</a></div>
         </article>
-        <div class="grid" style="margin-top:1rem">
-          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Ararat-platform" aria-label="Open Ararat Platform repository"></a><span class="arrow">↗</span><h3>Ararat Platform</h3><p>A unified management platform for FC Ararat Academy staff, players, and members in Shiraz.</p><div class="tags"><span class="tag">Go</span><span class="tag">PocketBase</span><span class="tag">Management</span></div></article>
-          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Simorgh-edge-gateway" aria-label="Open Simorgh Edge Gateway repository"></a><span class="arrow">↗</span><h3>Simorgh Edge Gateway</h3><p>An agentic edge gateway exploring resilient AI-provider federation on Cloudflare Workers.</p><div class="tags"><span class="tag">TypeScript</span><span class="tag">Cloudflare Workers</span><span class="tag">AI Agents</span></div></article>
-          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/Log-Sentinel" aria-label="Open Log-Sentinel repository"></a><span class="arrow">↗</span><h3>Log-Sentinel</h3><p>A Python CLI foundation for log ingestion and anomaly-detection workflows, with a reproducible test baseline.</p><div class="tags"><span class="tag">Python</span><span class="tag">CLI</span><span class="tag">Observability</span></div></article>
-          <article class="card"><a class="card-link" href="https://github.com/Shaiinarab/mashreghi_asil" aria-label="Open Luxury Perfume Shop repository"></a><span class="arrow">↗</span><h3>Luxury Perfume Shop</h3><p>A full-stack commerce experiment combining a Next.js client, Rust API, and WebAssembly scent package.</p><div class="tags"><span class="tag">Next.js</span><span class="tag">Rust</span><span class="tag">WebAssembly</span></div></article>
+        <article class="feat-card" data-reveal>
+          <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>TypeScript · Cloudflare Workers</div>
+          <h3><a href="https://github.com/Shaiinarab/Simorgh-edge-gateway" target="_blank" rel="noopener">Simorgh Edge Gateway <span class="arrow" aria-hidden="true">↗</span></a></h3>
+          <p>An agentic edge gateway exploring resilient AI-provider federation — routing, retries and failover at the edge instead of in a datacenter.</p>
+          <div class="tags"><span class="tag">AI agents</span><span class="tag">Edge compute</span><span class="tag">Federation</span></div>
+          <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/Simorgh-edge-gateway" target="_blank" rel="noopener">Source</a></div>
+        </article>
+        <article class="feat-card" data-reveal>
+          <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>Next.js · Rust · WebAssembly</div>
+          <h3><a href="https://github.com/Shaiinarab/mashreghi_asil" target="_blank" rel="noopener">Mashreghi Asil — Luxury Perfume Shop <span class="arrow" aria-hidden="true">↗</span></a></h3>
+          <p>A full-stack luxury e-commerce experiment: Next.js client, Rust API and a WebAssembly scent-packaging module.</p>
+          <div class="tags"><span class="tag">Commerce</span><span class="tag">WASM</span><span class="tag">Full-stack</span></div>
+          <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/mashreghi_asil" target="_blank" rel="noopener">Source</a></div>
+        </article>
+        <article class="feat-card" data-reveal>
+          <div class="feat-top mono"><span class="lang-dot" style="--lc:#00ADD8"></span>Go · PocketBase</div>
+          <h3><a href="https://github.com/Shaiinarab/Ararat-platform" target="_blank" rel="noopener">Ararat Platform <span class="arrow" aria-hidden="true">↗</span></a></h3>
+          <p>A unified management platform for FC Ararat Academy staff, players and members in Shiraz — one login for the whole club's operations.</p>
+          <div class="tags"><span class="tag">Go</span><span class="tag">Management</span><span class="tag">Real users</span></div>
+          <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/Ararat-platform" target="_blank" rel="noopener">Source</a></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ DIRECTORY ============ -->
+    <section id="directory" class="shell section" aria-labelledby="directory-title">
+      <div class="sec-head" data-reveal>
+        <div>
+          <p class="eyebrow mono">// AUTO-SYNCED INDEX</p>
+          <h2 id="directory-title">All public repositories</h2>
         </div>
-      </section>
+        <p>Pulled live from <span class="mono dim">api.github.com/users/Shaiinarab</span>. Publish something new and it appears here on the next visit — no manual updates.</p>
+      </div>
 
-      <section id="resume" aria-labelledby="resume-title">
-        <div class="section-head"><h2 id="resume-title">Public résumé snapshot</h2><p>A deliberately compact, machine-readable profile. It contains only reviewed public-safe information and is versioned with this portfolio.</p></div>
-        <div class="resume">
-          <aside class="resume-aside"><h3>Positioning</h3><p>Open-source builder focused on practical systems, edge engineering, and developer tools.</p><div class="actions"><a class="button" href="data/resume.public.json" download>Get JSON résumé <span>↧</span></a></div></aside>
-          <div class="resume-main"><h3>Capabilities</h3><div class="skill-group"><strong>Systems and backend development</strong><p>Rust · Go · Python · TypeScript</p></div><div class="skill-group"><strong>Edge and developer tooling</strong><p>Cloudflare Workers · CLI · Observability · AI systems</p></div><div class="skill-group"><strong>Working method</strong><p>Establish a baseline, ship a bounded improvement, and capture verifiable evidence before extending scope.</p></div></div>
+      <div class="toolbar" data-reveal>
+        <label class="search" for="repo-search">
+          <svg viewBox="0 0 16 16" class="ic" aria-hidden="true"><circle cx="7" cy="7" r="4.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m10.4 10.4 3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input id="repo-search" type="search" placeholder="Search repositories…  (press / )" aria-label="Search repositories by name or description" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="chips" id="lang-chips" role="group" aria-label="Filter by language"></div>
+      </div>
+
+      <p class="result-line mono dim" id="result-line" role="status" aria-live="polite"></p>
+      <div class="repo-grid" id="repo-grid" aria-busy="true"></div>
+
+      <div class="api-note" id="api-note" hidden>
+        <p><strong>Couldn't reach the GitHub API.</strong> You may be rate-limited or offline — showing the last known snapshot instead.</p>
+        <button class="btn btn-sm btn-ghost" id="retry-btn" type="button">Retry sync ⟳</button>
+      </div>
+    </section>
+
+    <!-- ============ LIVE DEMOS ============ -->
+    <section id="demos" class="shell section" aria-labelledby="demos-title">
+      <div class="sec-head" data-reveal>
+        <div>
+          <p class="eyebrow mono">// RUNNING, NOT JUST COMMITTED</p>
+          <h2 id="demos-title">Live demos &amp; endpoints</h2>
         </div>
-      </section>
+        <p>Public surfaces you can poke right now — no sign-up, no data collected.</p>
+      </div>
+      <div class="demo-grid">
+        <a class="demo-card" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener" data-reveal>
+          <span class="status-pill"><span class="pulse" aria-hidden="true"></span>LIVE</span>
+          <h3>RepoPulse status feed ↗</h3>
+          <p>Compact, privacy-filtered activity snapshots served from a Cloudflare Worker.</p>
+        </a>
+        <a class="demo-card" href="https://huggingface.co/spaces/shahinozone/role-fit-lab" target="_blank" rel="noopener" data-reveal>
+          <span class="status-pill"><span class="pulse" aria-hidden="true"></span>LIVE</span>
+          <h3>Role-Fit Lab (Hugging Face) ↗</h3>
+          <p>Browser-only demo comparing a role description against reviewed public project evidence. No inputs stored, no ranking verdicts.</p>
+        </a>
+        <a class="demo-card" href="https://portfolio-context.shahino3ozone1353.workers.dev/context" target="_blank" rel="noopener" data-reveal>
+          <span class="status-pill"><span class="pulse" aria-hidden="true"></span>LIVE</span>
+          <h3>Public context API ↗</h3>
+          <p>Minimal JSON endpoint describing this portfolio — machine-readable, public-safe by design.</p>
+        </a>
+      </div>
+    </section>
 
-      <section id="evidence" aria-labelledby="evidence-title">
-        <div class="section-head"><h2 id="evidence-title">How I validate work</h2><p>Portfolio claims should remain small, inspectable, and connected to actual public evidence—not inflated summaries.</p></div>
-        <div class="evidence-grid">
-          <article><h3>Source-backed claims</h3><p>Every public case study starts from a repository, documentation page, or live endpoint that can be reviewed.</p></article>
-          <article><h3>Privacy-aware delivery</h3><p>Public signals should prove useful engineering behavior while minimizing data exposure and avoiding sensitive operational details.</p></article>
-          <article><h3>Reviewable iterations</h3><p>Changes move through small checkpoints: local validation, preview review, and only then public promotion.</p></article>
+    <!-- ============ CONNECT ============ -->
+    <section id="connect" class="shell section" aria-labelledby="connect-title">
+      <div class="connect-box" data-reveal>
+        <div>
+          <p class="eyebrow mono">// OPEN CHANNEL</p>
+          <h2 id="connect-title">Connect if you dare</h2>
+          <p class="lead">Instead of talking, send me your favorite track. 🎧 Music speaks what cannot be expressed.</p>
         </div>
-      </section>
+        <div class="connect-actions">
+          <a class="btn btn-primary" href="https://github.com/Shaiinarab" target="_blank" rel="noopener">GitHub ↗</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/shaiinarab/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a class="btn btn-ghost" href="mailto:Shahinarab619@outlook.com">Email ✉</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-      <section id="lab" aria-labelledby="lab-title">
-        <div class="lab"><div><h2 id="lab-title">Role-Fit Lab</h2><p>An explainable, browser-only Hugging Face demonstration that compares a role description against reviewed public project evidence and returns shared technical themes with source links. It sends no input, calls no model, stores no data, ranks no candidate, and makes no hiring recommendation.</p><div class="actions"><a class="button primary" href="https://huggingface.co/spaces/shahinozone/role-fit-lab">Open Role-Fit Lab <span>↗</span></a></div></div><span class="status">Live public demo</span></div>
-      </section>
-    </main>
-
-    <footer><span>© 2026 Shahin Arab</span><span><a href="https://portfolio-context.shahino3ozone1353.workers.dev/context">public context API ↗</a> · <a href="https://github.com/Shaiinarab">github.com/Shaiinarab ↗</a></span></footer>
-  </div>
+  <footer class="shell foot">
+    <span class="mono dim">© <span id="year">2026</span> Shahin Arab · Shiraz 🇮🇷</span>
+    <span class="foot-links">
+      <img src="https://komarev.com/ghpvc/?username=Shaiinarab&amp;color=22e4ff&amp;style=flat-square" alt="profile views" loading="lazy">
+      <a class="mono dim" href="https://github.com/Shaiinarab/shahinarab78" target="_blank" rel="noopener">page source ↗</a>
+    </span>
+  </footer>
 </body>
 </html>

@@ -7,6 +7,13 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=20&duration=4000&pause=800&color=00ffff&center=true&vCenter=true&width=600&lines=🔮+Researcher+%7C+Open+Source+Enthusiast;⚡+Rust+%2B+Zig+%2B+Go+%2B+Python+%2B+Mojo;🐧+Linux+%7C+GPU+Computing+%7C+CUDA+%2F+OpenCL;🛡️+Cybersecurity+%7C+Hacking+Mindset;🎵+Music+Therapy+%7C+OS+Optimization" alt="Typing SVG"/>
 </h1>
 
+<p align="center">
+  <a href="https://shaiinarab.github.io/shahinarab78/" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%8C%90_ENTER_THE_HUB-shaiinarab.github.io%2Fshahinarab78-ff0080?style=for-the-badge&labelColor=0D1117" alt="Open the Repo Hub"/></a>
+  <a href="https://github.com/Shaiinarab/shahinarab78/actions/workflows/deploy-pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/Shaiinarab/shahinarab78/deploy-pages.yml?branch=main&style=flat-square&label=pages%20deploy" alt="Pages deploy status"/></a>
+</p>
+
+> 🗂️ **This repository is also my website** — a live repo hub that auto-syncs every public repository from the GitHub API: searchable, filterable, always current.
+
 ---
 
 ### 🌑 **THE ARCHITECT** 
@@ -55,7 +62,7 @@ mod shahin_arab {
 
 | # | Project | Description | Stack |
 |---|---------|-------------|-------|
-| **01** | **Oduverse** | 🌸 E-commerce perfume online shop | Building the scent of digital luxury |
+| **01** | **[Oduverse → mashreghi_asil](https://github.com/Shaiinarab/mashreghi_asil)** | 🌸 E-commerce perfume online shop | Next.js + Rust + WASM |
 | **02** | **NeuroSymphonia** | 🎵 Music-based therapeutic rhythmic mobile game | Healing through rhythm & code |
 | **03** | **Nimrooz VPN** | 🛡️ Rust-based VPN client for all protocols | Freedom through encryption |
 | **04** | **Music Sanctuary** | 🎼 Real Rap • EDM • Nu-Metal • Jazz • Iranian Folklore | The soundtrack of my soul |

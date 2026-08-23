@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shaiinarab.github.io/shahinarab78/sitemap.xml

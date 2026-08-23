@@ -1,1 +1,6 @@
-Nothing needs to be added to the .gitignore file based on the provided changes. The only added file is `.gitignore` itself, and the only modified file is `README.md`, which are both appropriate to track in version control.
+# BMAD render snapshots are regenerated per run — never commit them.
+_bmad/render/
+
+# OS noise
+.DS_Store
+Thumbs.db
