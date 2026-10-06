@@ -1,0 +1,22 @@
+title = "shahinarab78 — gitleaks configuration"
+
+[extend]
+# Start from the upstream default rules, then add repo-specific scoping below.
+useDefault = true
+
+[allowlist]
+description = """
+BMAD files-manifest.csv stores a SHA-256 checksum per indexed asset in its
+last column. gitleaks' generic-api-key rule reads any 64-char hex string as
+a credential, so this file trips it on every row it can resolve.
+
+Verified benign: the flagged value ff1c5060673dd595edd61e76806bae876264ec6895\
+c2eaadf8a6190785bf5f7b is exactly `sha256sum .claude/skills/bmad-ux/assets/\
+key-screens.md`.
+
+Scoped to this single file so a real secret anywhere else still surfaces. A
+.gitleaksignore regex was tried first and is rejected by gitleaks 8.30.1
+("Invalid .gitleaksignore entry"); a full fingerprint works but embeds the
+commit SHA, so it silently stops matching once the file is committed again.
+"""
+paths = ['''_bmad/_config/files-manifest\.csv''']
