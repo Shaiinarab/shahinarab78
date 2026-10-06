@@ -4,3 +4,7 @@ _bmad/render/
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Python bytecode — regenerated on every run, machine- and pytest-version specific
+__pycache__/
+*.pyc
