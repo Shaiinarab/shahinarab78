@@ -103,7 +103,7 @@ check("css:type-tokens", css.includes("--text-body") && css.includes("--text-dis
 check("css:no-unloaded-inter", !/--sans:\s*Inter,/.test(css));
 check("css:tabular-numerals", css.includes("tabular-nums"));
 check("css:prefers-contrast", css.includes("prefers-contrast: more"));
-check("appjs:snapshot-cache", appJs.includes("hub:snapshot:v1") && appJs.includes("localStorage"));
+check("appjs:snapshot-cache", appJs.includes("hub:repos:v1") && appJs.includes("localStorage") && appJs.includes("function readCache"));
 check("appjs:shareable-filter-state", appJs.includes("history.replaceState"));
 
 /* ---- shipped assets ---- */
@@ -115,6 +115,31 @@ for (const asset of ["assets/og.png", "assets/hub-flow.svg"]) {
     check(`asset:${asset}`, false, "missing");
   }
 }
+try {
+  const st = statSync(new URL("../assets/fonts/caveat-latin.woff2", import.meta.url));
+  check("asset:handwriting-font", st.size > 20000 && st.size < 200000, `${st.size} bytes`);
+} catch {
+  check("asset:handwriting-font", false, "missing");
+}
+
+/* ---- the human layer (redesign invariants) ---- */
+check("css:self-hosted-font-no-cdn", css.includes("fonts/caveat-latin.woff2") && !/fonts\.(googleapis|gstatic)/.test(css + index));
+check("css:paper-theme", css.includes('[data-theme="paper"]') && css.includes("--ink") && css.includes(".hand"));
+check("css:human-accents", css.includes(".note") && css.includes(".seal") && css.includes(".eq"));
+check("css:reduced-motion-covers-new-motion", /prefers-reduced-motion[\s\S]*\.eq i/.test(css));
+check("index:theme-toggle", index.includes('id="theme-toggle"') && index.includes("hub:theme:v1"));
+check("index:human-section", index.includes('id="offclock"') && index.includes("send me a song"));
+check("index:annotations", (index.match(/class="note /g) || []).length >= 3 && index.includes('class="doodle"'));
+check("index:motion-hooks", index.includes('class="btn btn-primary magnetic"') && index.includes('class="terminal tilt"'));
+check("404:theme-aware-and-human", notFound.includes("hub:theme:v1") && notFound.includes("wrong door"));
+check("appjs:theme-persisted", appJs.includes("hub:theme:v1") && appJs.includes("prefers-color-scheme"));
+check("appjs:living-terminal-typo-fix", appJs.includes("sybc --wit") && appJs.includes("backspace"));
+check("appjs:decode-effect", appJs.includes("function decode") && appJs.includes("data-decode"));
+check("appjs:toasts", appJs.includes("function toast") && appJs.includes('$("#toasts")'));
+check("appjs:easter-egg", appJs.includes('endsWith("shahin")'));
+check("appjs:connection-life", appJs.includes('addEventListener("offline"') && appJs.includes('addEventListener("online"'));
+check("appjs:seals-on-cards", appJs.includes("const SEALS") && appJs.includes("seal"));
+check("appjs:magnetic-and-tilt", appJs.includes(".magnetic") && appJs.includes(".tilt"));
 
 console.log(failures.length ? `\nRED — ${failures.length} failing` : "\nGREEN — all checks passing");
 process.exit(failures.length ? 1 : 0);
