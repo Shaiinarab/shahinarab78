@@ -3,9 +3,15 @@
 #
 # Two jobs:
 #   refresh-snapshot — weekly/dispatch only: regenerates FALLBACK_REPOS from the
-#     live GitHub API using the GITHUB_PAT repo secret, opens a PR if it drifted.
+#     live GitHub API using the PAT environment secret (environment: github-pages),
+#     opens a PR if it drifted.
 #   deploy — verifies with scripts/verify.mjs, then ships ONLY the site files;
 #     internal docs, BMAD/Claude scaffolding and scripts stay out of the artifact.
+#
+# Secret location: Settings → Environments → github-pages → Secret = "PAT".
+# Environment secrets are ONLY exposed to jobs that declare
+# `environment: <name>` — so refresh-snapshot declares it too. Never hardcode
+# or echo the token; GitHub masks it in logs automatically.
 #
 # First run: if the deploy job fails with "Pages not enabled",
 # open Settings → Pages and set Source = "GitHub Actions", then re-run.
@@ -30,11 +36,15 @@ concurrency:
 
 jobs:
   # Keeps FALLBACK_REPOS in assets/app.js current with the live GitHub API,
-  # authenticated via GITHUB_PAT (repo secret) so we never burn the 60/hr
-  # anonymous limit. Opens a PR only when the snapshot actually drifts.
+  # authenticated via the "PAT" secret on the github-pages environment so we
+  # never burn the 60/hr anonymous limit. Opens a PR only when the snapshot
+  # actually drifts. NOTE: environment secrets require the job to declare
+  # `environment:` — and the env must be listed under this workflow's
+  # permitted environments (Settings → Environments → github-pages).
   refresh-snapshot:
     if: ${{ github.event_name != 'push' }}
     runs-on: ubuntu-latest
+    environment: github-pages
     outputs:
       refreshed-sha: ${{ steps.pr.outputs.commit }}
     permissions:
@@ -51,7 +61,7 @@ jobs:
 
       - name: Refresh snapshot from the GitHub API
         env:
-          GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+          GITHUB_PAT: ${{ secrets.PAT }}
         run: python3 scripts/refresh-snapshot.py
 
       - name: Verify after refresh
@@ -61,7 +71,7 @@ jobs:
         id: pr
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_PAT }}
+          token: ${{ secrets.PAT }}
           branch: chore/refresh-offline-snapshot
           delete-branch: true
           title: "chore(hub): refresh offline repo snapshot"
@@ -77,7 +87,8 @@ jobs:
     # workflow_dispatch: redeploy current main after the refresh check passes.
     # schedule: refresh + PR only — no point deploying unchanged files.
     needs: refresh-snapshot
-    if: ${{ github.event_name != 'schedule' && needs.refresh-snapshot.result != 'failure' }}
+    # push deploys must never wait on the snapshot job — it only runs on schedule/dispatch
+    if: ${{ github.event_name == 'push' || (github.event_name != 'schedule' && needs.refresh-snapshot.result != 'failure') }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -99,6 +110,7 @@ jobs:
           cp index.html 404.html robots.txt sitemap.xml .nojekyll _site/
           cp -r assets _site/assets
           cp data/resume.public.json _site/data/
+          cp -r vendor _site/vendor
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

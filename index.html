@@ -63,6 +63,18 @@
   </script>
 
   <link rel="stylesheet" href="assets/style.css">
+
+  <!-- ============ Gen-UI runtime stack (vendored, zero CDN) ============
+       htmx 4.0.0 (preview line)   — partial-swap / trigger pipeline
+       alpinejs 3.17.4             — reactive islands (defer: non-blocking)
+       _hyperscript 0.9.93         — declarative micro-behaviors (defer)
+       tailwindcss 4.3.3 browser   — no-build utility layer (defer; my CSS wins
+                                     on conflicts, so FOUT risk is contained) -->
+  <script src="vendor/htmx-4.0.0.js"></script>
+  <script src="vendor/alpine-3.17.4.js" defer></script>
+  <script src="vendor/_hyperscript-0.9.93.js" defer></script>
+  <script src="vendor/tailwind-browser-4.js" defer></script>
+
   <script src="assets/app.js" defer></script>
 </head>
 <body>
@@ -81,7 +93,8 @@
         <a href="#offclock">Off the clock</a>
         <a href="#connect">Connect</a>
       </nav>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to paper mode">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to paper mode"
+              _="on click add .press then wait 90ms then remove .press end">
         <span class="tt-glyph" aria-hidden="true">◑</span><span class="tt-label">night</span>
       </button>
       <a class="btn btn-ghost btn-sm" href="https://github.com/Shaiinarab" target="_blank" rel="noopener">
@@ -198,7 +211,10 @@
       <div class="toolbar" data-reveal>
         <label class="search" for="repo-search">
           <svg viewBox="0 0 16 16" class="ic" aria-hidden="true"><circle cx="7" cy="7" r="4.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m10.4 10.4 3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <input id="repo-search" type="search" placeholder="Search repositories…  (press / )" aria-label="Search repositories by name or description" autocomplete="off" spellcheck="false">
+          <!-- HTMX 4 (idempotent): keyup emits a custom htmx event; app.js answers it with htmx.trigger()
+               so the grid re-renders through the library's request pipeline — no network, no double-render. -->
+          <input id="repo-search" type="search" placeholder="Search repositories…  (press / )" aria-label="Search repositories by name or description" autocomplete="off" spellcheck="false"
+                 hx-trigger="keyup changed delay:150ms -> hub:query" hx-on:hub:query="window.hub && hub.onHtmxQuery()">
         </label>
         <div class="chips" id="lang-chips" role="group" aria-label="Filter by language"></div>
       </div>
@@ -315,7 +331,8 @@
           <ul>
             <li>Public GitHub data only — forks and this page's own repo are filtered out.</li>
             <li>If the API is rate-limited or offline, a cached snapshot from your last visit keeps the page useful.</li>
-            <li>No cookies, no analytics, no third-party scripts. The theme you pick is the only thing I remember.</li>
+            <li>No cookies, no analytics, no CDNs — every script on this page ships from my own repo. The theme you pick is the only thing I remember.</li>
+            <li>Runtime layer: <strong class="mono">htmx 4.0.0</strong> (preview line) drives the search trigger pipeline, <strong class="mono">Alpine 3.17</strong> powers reactive islands, <strong class="mono">_hyperscript 0.9.93</strong> handles declarative micro-behaviors, and <strong class="mono">Tailwind v4.3</strong>'s browser build sits under my hand-written CSS. All four are vendored from unpkg — zero CDN calls, works offline.</li>
           </ul>
         </div>
         <img class="flow" src="assets/hub-flow.svg" width="960" height="320" loading="lazy" data-reveal
@@ -348,6 +365,10 @@
   <footer class="shell foot">
     <span class="mono dim">© <span id="year">2026</span> Shahin Arab · Shiraz 🇮🇷 · built by hand, deployed by robot</span>
     <span class="foot-links">
+      <span class="foot-status mono" x-data="{ online: navigator.onLine }"
+            @htmx:load.window="online = navigator.onLine"
+            :aria-label="online ? 'Connection status: online' : 'Connection status: offline, serving snapshot'"
+            x-text="online ? 'signal: locked' : 'signal: offline mode'" role="status" aria-live="polite"></span>
       <span class="hand" aria-hidden="true">hi mom.</span>
       <img src="https://komarev.com/ghpvc/?username=Shaiinarab&amp;color=22e4ff&amp;style=flat-square" alt="profile views" loading="lazy">
       <a class="mono dim" href="https://github.com/Shaiinarab/shaiinarab" target="_blank" rel="noopener">page source ↗</a>

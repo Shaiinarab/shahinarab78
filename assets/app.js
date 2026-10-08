@@ -408,9 +408,25 @@
   });
 
   let searchTimer;
-  searchInput.addEventListener("input", () => {
+  function scheduleRender() {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(renderGrid, 120);
+  }
+  searchInput.addEventListener("input", scheduleRender);
+
+  // HTMX 4 integration (vendored): when htmx is present, its debounced
+  // `keyup changed delay:150ms -> hub:query` trigger becomes the single render
+  // path — the native listener yields so filtering never runs twice. Without
+  // htmx (or before it boots) behavior is identical via the native timer.
+  window.hub = {
+    onHtmxQuery() {
+      if (window.htmx) { clearTimeout(searchTimer); renderGrid(); }
+    },
+  };
+  document.addEventListener("htmx:load", () => {
+    // grid re-reveals cleanly after any htmx-managed swap
+    const g = $("#repo-grid");
+    if (g) registerReveals(g);
   });
 
   // Press "/" anywhere to jump to search.
@@ -737,5 +753,10 @@
   if (coarse()) searchInput.placeholder = "Search repositories…";
 
   readUrlState();
-  load().then(() => runTerminal());
+  load().then(() => {
+    runTerminal();
+    // notify any htmx/Alpine listeners that directory data settled (footer signal pill)
+    if (window.htmx) window.htmx.trigger(document.body, "htmx:load");
+    else window.dispatchEvent(new CustomEvent("htmx:load"));
+  });
 })();
