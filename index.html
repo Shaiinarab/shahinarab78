@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <!-- marks JS as available before first paint; reveal animations stay gated on .js -->
+  <script>document.documentElement.classList.add("js");</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shahin Arab — Repo Hub · Systems, Tools &amp; Practical AI</title>
   <meta name="description" content="The front door to every public repository by Shahin Arab — searchable, filtered, and synced live from the GitHub API. Rust, Go, Python, TypeScript, edge tooling and more.">
@@ -17,9 +19,12 @@
   <meta property="og:url" content="https://shaiinarab.github.io/shahinarab78/">
   <meta property="og:title" content="Shahin Arab — Repo Hub">
   <meta property="og:description" content="Every public repo. One signal. Synced live from the GitHub API.">
-  <meta property="og:image" content="https://avatars.githubusercontent.com/u/211481146?v=4&amp;s=600">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:image" content="https://avatars.githubusercontent.com/u/211481146?v=4&amp;s=600">
+  <meta property="og:image" content="https://shaiinarab.github.io/shahinarab78/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Shahin Arab — SHAHIN://HUB: systems, tools and practical AI">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://shaiinarab.github.io/shahinarab78/assets/og.png">
   <meta name="twitter:title" content="Shahin Arab — Repo Hub">
   <meta name="twitter:description" content="Every public repo. One signal. Synced live from the GitHub API.">
 
@@ -36,10 +41,14 @@
     "@type": "Person",
     "name": "Shahin Arab",
     "url": "https://shaiinarab.github.io/shahinarab78/",
+    "jobTitle": "Open-source builder",
     "sameAs": [
       "https://github.com/Shaiinarab",
-      "https://www.linkedin.com/in/shaiinarab/"
+      "https://www.linkedin.com/in/shaiinarab/",
+      "https://twitter.com/shaiinarab",
+      "https://huggingface.co/shahinozone"
     ],
+    "knowsLanguage": ["fa", "en"],
     "homeLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": "Shiraz", "addressCountry": "IR" } },
     "knowsAbout": ["Rust", "Go", "Python", "TypeScript", "Cloudflare Workers", "Cybersecurity", "GPU Computing"]
   }
@@ -49,6 +58,7 @@
   <script src="assets/app.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#top">Skip to content</a>
   <div class="fx" aria-hidden="true"></div>
 
   <header class="nav" role="banner">
@@ -58,6 +68,7 @@
         <a href="#featured">Featured</a>
         <a href="#directory">All repos</a>
         <a href="#demos">Live demos</a>
+        <a href="#colophon">How it works</a>
         <a href="#connect">Connect</a>
       </nav>
       <a class="btn btn-ghost btn-sm" href="https://github.com/Shaiinarab" target="_blank" rel="noopener">
@@ -72,7 +83,7 @@
     <section class="hero shell" aria-labelledby="hero-title">
       <div class="hero-copy" data-reveal>
         <p class="eyebrow mono">// REPO DIRECTORY · SYNCED LIVE FROM GITHUB</p>
-        <h1 id="hero-title" class="display">Shahin&nbsp;<span class="grad">Arab</span></h1>
+        <h1 id="hero-title" class="display">Shahin&nbsp;<span class="tok">Arab</span></h1>
         <p class="type-line mono" aria-live="off"><span id="typed"></span><span class="caret" aria-hidden="true"></span></p>
         <p class="lead">
           Systems, tools &amp; practical AI — written across
@@ -117,12 +128,17 @@
         <p>The builds that best show how I work: small scope, real workflows, verifiable results.</p>
       </div>
       <div class="featured-grid">
-        <article class="feat-card" data-reveal>
-          <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>TypeScript · Cloudflare Workers</div>
-          <h3><a href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">RepoPulse <span class="arrow" aria-hidden="true">↗</span></a></h3>
-          <p>Signed GitHub-webhook activity signal with a privacy-filtered public status feed — engineering activity without retaining raw payloads or naming private repos.</p>
-          <div class="tags"><span class="tag">Webhooks</span><span class="tag">Privacy-first</span><span class="tag">Workers</span></div>
-          <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">Source</a><a class="btn btn-sm btn-ghost" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener">Live status ↗</a></div>
+        <article class="feat-card feat-card--pinned" data-reveal>
+          <div>
+            <div class="feat-path mono">~/featured/repopulse</div>
+            <h3><a href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">RepoPulse <span class="arrow" aria-hidden="true">↗</span></a></h3>
+            <p class="feat-desc">Signed GitHub-webhook activity signal with a privacy-filtered public status feed — engineering activity without retaining raw payloads or naming private repos.</p>
+          </div>
+          <div class="feat-side">
+            <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>TypeScript · Cloudflare Workers</div>
+            <div class="tags"><span class="tag">Webhooks</span><span class="tag">Privacy-first</span><span class="tag">Workers</span></div>
+            <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">Source</a><a class="btn btn-sm btn-ghost" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener">Live status ↗</a></div>
+          </div>
         </article>
         <article class="feat-card" data-reveal>
           <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>TypeScript · Cloudflare Workers</div>
@@ -167,12 +183,19 @@
       </div>
 
       <p class="result-line mono dim" id="result-line" role="status" aria-live="polite"></p>
-      <div class="repo-grid" id="repo-grid" aria-busy="true"></div>
+
+      <noscript>
+        <div class="api-note">
+          <p><strong>JavaScript is off</strong>, so the live directory can't sync in this browser. Browse the repositories directly on <a href="https://github.com/Shaiinarab?tab=repositories" target="_blank" rel="noopener">github.com/Shaiinarab</a>.</p>
+        </div>
+      </noscript>
 
       <div class="api-note" id="api-note" hidden>
         <p><strong>Couldn't reach the GitHub API.</strong> You may be rate-limited or offline — showing the last known snapshot instead.</p>
         <button class="btn btn-sm btn-ghost" id="retry-btn" type="button">Retry sync ⟳</button>
       </div>
+
+      <div class="repo-grid" id="repo-grid" aria-busy="true"></div>
     </section>
 
     <!-- ============ LIVE DEMOS ============ -->
@@ -184,22 +207,49 @@
         </div>
         <p>Public surfaces you can poke right now — no sign-up, no data collected.</p>
       </div>
-      <div class="demo-grid">
-        <a class="demo-card" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener" data-reveal>
+      <div class="feed">
+        <a class="feed-row" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener" data-reveal>
           <span class="status-pill"><span class="pulse" aria-hidden="true"></span>LIVE</span>
-          <h3>RepoPulse status feed ↗</h3>
-          <p>Compact, privacy-filtered activity snapshots served from a Cloudflare Worker.</p>
+          <div>
+            <h3>RepoPulse status feed <span class="arrow" aria-hidden="true">↗</span></h3>
+            <p>Compact, privacy-filtered activity snapshots served from a Cloudflare Worker.</p>
+          </div>
+          <span class="feed-endpoint mono" aria-hidden="true">repopulse…workers.dev/status</span>
         </a>
-        <a class="demo-card" href="https://huggingface.co/spaces/shahinozone/role-fit-lab" target="_blank" rel="noopener" data-reveal>
+        <a class="feed-row" href="https://huggingface.co/spaces/shahinozone/role-fit-lab" target="_blank" rel="noopener" data-reveal>
           <span class="status-pill"><span class="pulse" aria-hidden="true"></span>LIVE</span>
-          <h3>Role-Fit Lab (Hugging Face) ↗</h3>
-          <p>Browser-only demo comparing a role description against reviewed public project evidence. No inputs stored, no ranking verdicts.</p>
+          <div>
+            <h3>Role-Fit Lab (Hugging Face) <span class="arrow" aria-hidden="true">↗</span></h3>
+            <p>Browser-only demo comparing a role description against reviewed public project evidence. No inputs stored, no ranking verdicts.</p>
+          </div>
+          <span class="feed-endpoint mono" aria-hidden="true">hf.co/spaces/…/role-fit-lab</span>
         </a>
-        <a class="demo-card" href="https://portfolio-context.shahino3ozone1353.workers.dev/context" target="_blank" rel="noopener" data-reveal>
+        <a class="feed-row" href="https://portfolio-context.shahino3ozone1353.workers.dev/context" target="_blank" rel="noopener" data-reveal>
           <span class="status-pill"><span class="pulse" aria-hidden="true"></span>LIVE</span>
-          <h3>Public context API ↗</h3>
-          <p>Minimal JSON endpoint describing this portfolio — machine-readable, public-safe by design.</p>
+          <div>
+            <h3>Public context API <span class="arrow" aria-hidden="true">↗</span></h3>
+            <p>Minimal JSON endpoint describing this portfolio — machine-readable, public-safe by design.</p>
+          </div>
+          <span class="feed-endpoint mono" aria-hidden="true">portfolio-context…workers.dev/context</span>
         </a>
+      </div>
+    </section>
+
+    <!-- ============ COLOPHON ============ -->
+    <section id="colophon" class="shell section" aria-labelledby="colophon-title">
+      <div class="colophon">
+        <div data-reveal>
+          <p class="eyebrow mono">// UNDER THE HOOD</p>
+          <h2 id="colophon-title">How this page works</h2>
+          <p class="lead">One static page, one public API, zero trackers. The directory is rebuilt in your browser on every visit, so new repositories show up without a redeploy.</p>
+          <ul>
+            <li>Public GitHub data only — forks and this page's own repo are filtered out.</li>
+            <li>If the API is rate-limited or offline, a cached snapshot from your last visit keeps the page useful.</li>
+            <li>No cookies, no analytics, no third-party scripts.</li>
+          </ul>
+        </div>
+        <img class="flow" src="assets/hub-flow.svg" width="960" height="320" loading="lazy" data-reveal
+             alt="Data flow: the GitHub API feeds fetch and pagination, which feeds filter and sort, which renders repository cards with search and language chips. A local snapshot in the browser is the offline fallback.">
       </div>
     </section>
 

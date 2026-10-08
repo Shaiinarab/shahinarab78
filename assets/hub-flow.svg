@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, 'Segoe UI', sans-serif">
+  <title id="t">How the repo hub works</title>
+  <desc id="d">Flow: the browser fetches public repository data from the GitHub API, filters forks and the site's own repo, applies search and language filters, and renders repository cards. When the API is unreachable it falls back to a local snapshot stored in the browser. No analytics or cookies are used.</desc>
+
+  <!-- connectors first so arrows sit behind nodes -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5b759e"/>
+    </marker>
+    <marker id="arrow-dash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a6b2f"/>
+    </marker>
+  </defs>
+
+  <g fill="none" stroke="#5b759e" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M232 120 H288"/>
+    <path d="M470 120 H526"/>
+    <path d="M708 120 H764"/>
+    <path d="M617 172 V232"/>
+    <path d="M232 268 H526" stroke-dasharray="6 6" stroke="#8a6b2f" marker-end="url(#arrow-dash)"/>
+  </g>
+
+  <!-- external source -->
+  <g>
+    <rect x="32" y="84" width="200" height="72" rx="10" fill="#1b2436" stroke="#3c4c6b" stroke-width="2"/>
+    <text x="56" y="114" font-size="17" font-weight="700" fill="#dbe6f7">GitHub API</text>
+    <text x="56" y="138" font-size="14" fill="#93a4c3">public repos only</text>
+  </g>
+
+  <!-- process: fetch -->
+  <g>
+    <rect x="288" y="84" width="182" height="72" rx="10" fill="#0c2a38" stroke="#1f8ba8" stroke-width="2"/>
+    <text x="312" y="114" font-size="17" font-weight="700" fill="#d7f4fb">Fetch + page</text>
+    <text x="312" y="138" font-size="14" fill="#8fc7d8">100 per request</text>
+  </g>
+
+  <!-- process: filter -->
+  <g>
+    <rect x="526" y="84" width="182" height="72" rx="10" fill="#0c2a38" stroke="#1f8ba8" stroke-width="2"/>
+    <text x="550" y="114" font-size="17" font-weight="700" fill="#d7f4fb">Filter + sort</text>
+    <text x="550" y="138" font-size="14" fill="#8fc7d8">no forks, no self</text>
+  </g>
+
+  <!-- neutral output -->
+  <g>
+    <rect x="764" y="84" width="164" height="72" rx="10" fill="#232c40" stroke="#4a5a7d" stroke-width="2"/>
+    <text x="788" y="114" font-size="17" font-weight="700" fill="#e3ebf8">Repo cards</text>
+    <text x="788" y="138" font-size="14" fill="#9fb0cd">search + chips</text>
+  </g>
+
+  <!-- storage: local snapshot -->
+  <g>
+    <rect x="32" y="232" width="200" height="72" rx="10" fill="#332a16" stroke="#a3813e" stroke-width="2"/>
+    <text x="56" y="262" font-size="17" font-weight="700" fill="#f2e2bd">Local snapshot</text>
+    <text x="56" y="286" font-size="14" fill="#c4a870">offline fallback</text>
+  </g>
+
+  <!-- neutral: this page -->
+  <g>
+    <rect x="526" y="232" width="182" height="72" rx="10" fill="#232c40" stroke="#4a5a7d" stroke-width="2"/>
+    <text x="550" y="262" font-size="17" font-weight="700" fill="#e3ebf8">This page</text>
+    <text x="550" y="286" font-size="14" fill="#9fb0cd">no cookies, no analytics</text>
+  </g>
+
+  <!-- legend -->
+  <g font-size="13" fill="#93a4c3">
+    <rect x="764" y="238" width="14" height="14" rx="3" fill="#0c2a38" stroke="#1f8ba8" stroke-width="1.5"/>
+    <text x="786" y="250">process</text>
+    <rect x="860" y="238" width="14" height="14" rx="3" fill="#332a16" stroke="#a3813e" stroke-width="1.5"/>
+    <text x="882" y="250">storage</text>
+    <rect x="764" y="270" width="14" height="14" rx="3" fill="#232c40" stroke="#4a5a7d" stroke-width="1.5"/>
+    <text x="786" y="282">output</text>
+    <rect x="860" y="270" width="14" height="14" rx="3" fill="#1b2436" stroke="#3c4c6b" stroke-width="1.5"/>
+    <text x="882" y="282">external</text>
+  </g>
+</svg>

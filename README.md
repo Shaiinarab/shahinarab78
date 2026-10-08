@@ -4,7 +4,7 @@
 </div>
 
 <h1 align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=20&duration=4000&pause=800&color=00ffff&center=true&vCenter=true&width=600&lines=🔮+Researcher+%7C+Open+Source+Enthusiast;⚡+Rust+%2B+Zig+%2B+Go+%2B+Python+%2B+Mojo;🐧+Linux+%7C+GPU+Computing+%7C+CUDA+%2F+OpenCL;🛡️+Cybersecurity+%7C+Hacking+Mindset;🎵+Music+Therapy+%7C+OS+Optimization" alt="Typing SVG"/>
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=4000&pause=800&color=00ffff&center=true&vCenter=true&width=600&lines=🔮+Researcher+%7C+Open+Source+Enthusiast;⚡+Rust+%2B+Zig+%2B+Go+%2B+Python+%2B+Mojo;🐧+Linux+%7C+GPU+Computing+%7C+CUDA+%2F+OpenCL;🛡️+Cybersecurity+%7C+Hacking+Mindset;🎵+Music+Therapy+%7C+OS+Optimization" alt="Researcher and open source enthusiast. Rust, Zig, Go, Python and Mojo. Linux, GPU computing, CUDA and OpenCL. Cybersecurity with a hacking mindset. Music therapy and OS optimization."/>
 </h1>
 
 <p align="center">
@@ -14,9 +14,22 @@
 
 > 🗂️ **This repository is also my website** — a live repo hub that auto-syncs every public repository from the GitHub API: searchable, filterable, always current.
 
+<details>
+<summary><strong>⚙️ How this repo works</strong> — one page, one API, zero trackers</summary>
+<br/>
+
+<img src="assets/hub-flow.svg" alt="Data flow: the GitHub API feeds fetch and pagination, which feeds filter and sort, which renders repository cards with search and language chips. A local snapshot in the browser is the offline fallback."/>
+
+- **`index.html` + `assets/`** — the hub itself. No build step, no framework, no cookies.
+- **Live sync** — your browser calls the GitHub API on every visit; new repos appear without a redeploy. Rate-limited or offline? A cached snapshot from your last visit takes over.
+- **Privacy by construction** — public data only, forks and this repo filtered out, nothing stored on a server.
+- **Deploy** — every push to `main` ships the site files to GitHub Pages via `.github/workflows/deploy-pages.yml`.
+
+</details>
+
 ---
 
-### 🌑 **THE ARCHITECT** 
+## 🌑 **THE ARCHITECT** 
 
 ```rust
 mod shahin_arab {
@@ -58,7 +71,7 @@ mod shahin_arab {
 
 ---
 
-### 🔮 **CURRENT QUESTS**
+## 🔮 **CURRENT QUESTS**
 
 | # | Project | Description | Stack |
 |---|---------|-------------|-------|
@@ -69,7 +82,7 @@ mod shahin_arab {
 
 ---
 
-### ⚗️ **ALCHEMY & SUBSTANCES**
+## ⚗️ **ALCHEMY & SUBSTANCES**
 
 <div align="center">
 
@@ -82,7 +95,7 @@ mod shahin_arab {
 
 ---
 
-### 🛠️ **TECH ARSENAL**
+## 🛠️ **TECH ARSENAL**
 
 <p align="center">
   <strong>⚔️ Languages of Power:</strong><br/>
@@ -110,7 +123,7 @@ mod shahin_arab {
 
 ---
 
-### 🎭 **THE PARADOX**
+## 🎭 **THE PARADOX**
 
 > 🧠 **Knows everything about computers**<br>
 > 💻 **Never coded for money**<br>
@@ -121,16 +134,16 @@ mod shahin_arab {
 
 ---
 
-### 📊 **GITHUB STATISTICS**
+## 📊 **GITHUB STATISTICS**
 
 <div align="center">
   <table>
     <tr>
       <td>
-        <img src="https://github-readme-stats.vercel.app/api?username=shahinarab78&show_icons=true&theme=radical&include_all_commits=true&count_private=true&hide_border=true&bg_color=0D1117&title_color=ff0080&icon_color=00ffff&text_color=C9D1D9" alt="GitHub Stats"/>
+        <a href="https://github.com/Shaiinarab"><img src="https://github-readme-stats.vercel.app/api?username=Shaiinarab&show_icons=true&theme=radical&include_all_commits=true&count_private=true&hide_border=true&bg_color=0D1117&title_color=ff0080&icon_color=00ffff&text_color=C9D1D9" alt="GitHub statistics for Shaiinarab: stars, commits, pull requests and issues"/></a>
       </td>
       <td>
-        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=shahinarab78&layout=compact&langs_count=6&theme=radical&hide_border=true&bg_color=0D1117&title_color=ff0080&icon_color=00ffff&text_color=C9D1D9" alt="Top Languages"/>
+        <a href="https://github.com/Shaiinarab?tab=repositories"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Shaiinarab&layout=compact&langs_count=6&theme=radical&hide_border=true&bg_color=0D1117&title_color=ff0080&icon_color=00ffff&text_color=C9D1D9" alt="Most used languages across Shaiinarab's repositories"/></a>
       </td>
     </tr>
   </table>
@@ -138,25 +151,25 @@ mod shahin_arab {
   <br/>
   
   <!-- Streak Stats -->
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=shahinarab78&theme=radical&hide_border=true&background=0D1117&stroke=ff0080" alt="Streak Stats"/>
+  <a href="https://github.com/Shaiinarab"><img src="https://streak-stats.demolab.com/?user=Shaiinarab&theme=radical&hide_border=true&background=0D1117&stroke=ff0080" alt="Contribution streak statistics for Shaiinarab"/></a>
   
   <br/><br/>
   
   <!-- Contribution Graph -->
-  <img src="https://ghchart.rshah.org/ff0080/shahinarab78" alt="Contribution Graph" style="width: 100%; max-width: 800px;"/>
+  <a href="https://github.com/Shaiinarab"><img src="https://ghchart.rshah.org/ff0080/Shaiinarab" alt="Contribution calendar for Shaiinarab" style="width: 100%; max-width: 800px;"/></a>
 </div>
 
 ---
 
-### 🏆 **TROPHIES & ACHIEVEMENTS**
+## 🏆 **TROPHIES & ACHIEVEMENTS**
 
 <p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=shahinarab78&theme=radical&no-frame=true&row=1&margin-w=10&column=4" alt="Trophies"/>
+  <a href="https://github.com/Shaiinarab"><img src="https://github-trophies.vercel.app/?username=Shaiinarab&theme=radical&no-frame=true&row=1&margin-w=10&column=4" alt="GitHub trophies earned by Shaiinarab"/></a>
 </p>
 
 ---
 
-### 🌐 **CONNECT IF YOU DARE**
+## 🌐 **CONNECT IF YOU DARE**
 
 <p align="center">
   <a href="https://www.linkedin.com/in/shaiinarab/" target="_blank">
@@ -178,17 +191,17 @@ mod shahin_arab {
 
 ---
 
-### 👁️ **YOU ARE WATCHER #**
+## 👁️ **YOU ARE WATCHER #**
 
 <div align="center">
-  <img src="https://komarev.com/ghpvc/?username=shahinarab78&color=ff0080&style=flat-square" alt="Profile Views"/>
+  <a href="https://github.com/Shaiinarab"><img src="https://komarev.com/ghpvc/?username=Shaiinarab&color=ff0080&style=flat-square" alt="Profile view counter for Shaiinarab"/></a>
 </div>
 
 ---
 
 <div align="center">
 
-### 🌑 **FINAL TRANSMISSION**
+## 🌑 **FINAL TRANSMISSION**
 
 <img src="https://media.giphy.com/media/v1.Y2xpdGlvbl9leHBsb3Npb24/XreJqONhNAmKVrXzDC/giphy.gif" width="200" alt="Cyberpunk GIF"/>
 

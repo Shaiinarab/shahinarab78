@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Repeatable verification battery for the static hub. Node built-ins only.
 // Run: node scripts/verify.mjs   → exit 0 green / 1 red.
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 
 const CANON = "https://shaiinarab.github.io/shahinarab78/";
 const failures = [];
@@ -14,7 +14,7 @@ function check(id, ok, detail = "") {
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 
-let index, notFound, robots, sitemap, workflow, appJs;
+let index, notFound, robots, sitemap, workflow, appJs, readme, css;
 try {
   index = read("index.html");
   notFound = read("404.html");
@@ -22,6 +22,8 @@ try {
   sitemap = read("sitemap.xml");
   workflow = read(".github/workflows/deploy-pages.yml");
   appJs = read("assets/app.js");
+  readme = read("README.md");
+  css = read("assets/style.css");
 } catch (e) {
   console.error("FAIL  fixture-load —", e.message);
   process.exit(1);
@@ -69,6 +71,43 @@ check("appjs:esc-used-for-html-injection", /(?:function esc\(|const esc = \()/u.
 check("appjs:fallback-snapshot-exists", appJs.includes("FALLBACK_REPOS"));
 check("appjs:timeout-guard", appJs.includes("AbortSignal.timeout"));
 check("appjs:noreferrer-on-cards", appJs.includes('rel="noopener noreferrer"'));
+
+/* ---- deploy hygiene: ship the site, not the workshop ---- */
+check("workflow:verify-gate-before-deploy", workflow.includes("node scripts/verify.mjs"));
+check("workflow:stages-site-dir", /path:\s*_site/.test(workflow));
+check("workflow:no-whole-repo-upload", !/path:\s*\.\s*$/m.test(workflow));
+
+/* ---- README widget correctness (the account is Shaiinarab) ---- */
+check("readme:no-nonexistent-account-widgets", !/(?:username|user)=shahinarab78|ghchart\.rshah\.org\/[^/\s]+\/shahinarab78/.test(readme));
+check("readme:stats-use-real-account", readme.includes("username=Shaiinarab") && readme.includes("user=Shaiinarab") && readme.includes("ghchart.rshah.org/ff0080/Shaiinarab"));
+check("readme:no-deprecated-hosts", !/readme-typing-svg\.herokuapp\.com|github-readme-streak-stats\.herokuapp\.com|github-profile-trophy\.vercel\.app/.test(readme));
+check("readme:flow-diagram-linked", readme.includes("assets/hub-flow.svg"));
+check("readme:widgets-have-alt-text", !/<img(?![^>]*\balt=)[^>]*>/i.test(readme));
+
+/* ---- UI hardening ---- */
+check("index:skip-link", index.includes('class="skip-link"'));
+check("index:noscript-fallback", index.includes("<noscript>"));
+check("index:token-hero-not-gradient-text", index.includes('class="tok"') && !index.includes('class="grad"'));
+check("index:status-feed-not-card-grid", index.includes('class="feed"') && !index.includes("demo-card"));
+check("index:colophon-diagram", index.includes('id="colophon"') && index.includes("assets/hub-flow.svg"));
+check("index:og-self-hosted", index.includes("assets/og.png") && index.includes('property="og:image:width"'));
+check("css:scroll-padding-for-sticky-nav", css.includes("scroll-padding-top"));
+check("css:type-tokens", css.includes("--text-body") && css.includes("--text-display") && css.includes("--ease-out"));
+check("css:no-unloaded-inter", !/--sans:\s*Inter,/.test(css));
+check("css:tabular-numerals", css.includes("tabular-nums"));
+check("css:prefers-contrast", css.includes("prefers-contrast: more"));
+check("appjs:snapshot-cache", appJs.includes("hub:snapshot:v1") && appJs.includes("localStorage"));
+check("appjs:shareable-filter-state", appJs.includes("history.replaceState"));
+
+/* ---- shipped assets ---- */
+for (const asset of ["assets/og.png", "assets/hub-flow.svg"]) {
+  try {
+    const st = statSync(new URL(`../${asset}`, import.meta.url));
+    check(`asset:${asset}`, st.size > 500, `${st.size} bytes`);
+  } catch {
+    check(`asset:${asset}`, false, "missing");
+  }
+}
 
 console.log(failures.length ? `\nRED — ${failures.length} failing` : "\nGREEN — all checks passing");
 process.exit(failures.length ? 1 : 0);

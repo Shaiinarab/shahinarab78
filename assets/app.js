@@ -83,7 +83,27 @@
     langs: ["All"],
     activeLang: "All",
     fromApi: false,
+    cacheTime: null,
   };
+
+  /* ---------- snapshot cache (offline fallback stays truthful) ---------- */
+
+  const CACHE_KEY = "hub:snapshot:v1";
+
+  function readCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed && Array.isArray(parsed.repos) && parsed.repos.length ? parsed : null;
+    } catch { return null; }
+  }
+
+  function writeCache(user, repos) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), user, repos }));
+    } catch { /* private mode / quota — cache is optional */ }
+  }
 
   /* ---------- DOM ---------- */
 
@@ -141,7 +161,11 @@
       : `<p class="empty-state mono">⌁ no repositories match “${esc(searchInput.value)}” — try another signal.</p>`;
     resultLine.textContent = state.fromApi
       ? `${items.length} of ${state.repos.length} repositories shown`
-      : `${items.length} repositories (cached snapshot — live sync unavailable)`;
+      : state.cacheTime
+        ? `${items.length} repositories · cached snapshot from ${new Date(state.cacheTime).toLocaleString()} — live sync unavailable`
+        : `${items.length} repositories · built-in snapshot — live sync unavailable`;
+    registerReveals(grid);
+    writeUrlState();
   }
 
   function renderChips() {
@@ -171,7 +195,9 @@
       sync.classList.remove("dim");
       sync.textContent = state.fromApi
         ? `✓ synced ${new Date().toLocaleTimeString()} · auto-refreshes on every visit`
-        : "⚠ offline snapshot · will retry next visit";
+        : state.cacheTime
+          ? `⚠ cached snapshot · last live sync ${new Date(state.cacheTime).toLocaleString()}`
+          : "⚠ offline snapshot · will retry next visit";
     }
   }
 
@@ -219,10 +245,14 @@
         state.activeLang = "All";
       }
       state.fromApi = true;
+      state.cacheTime = Date.now();
+      writeCache(state.user, state.repos);
     } catch {
-      state.user = null;
-      state.repos = FALLBACK_REPOS;
+      const cache = readCache();
+      state.user = cache?.user ?? null;
+      state.repos = cache?.repos ?? FALLBACK_REPOS;
       state.fromApi = false;
+      state.cacheTime = cache?.t ?? null;
       apiNote.hidden = false;
     }
     renderChips();
@@ -231,6 +261,25 @@
   }
 
   retryBtn.addEventListener("click", load);
+
+  /* ---------- shareable filter state (?q=&lang=) ---------- */
+
+  function readUrlState() {
+    const p = new URLSearchParams(location.search);
+    const q = p.get("q");
+    const lang = p.get("lang");
+    if (q) searchInput.value = q;
+    if (lang) state.activeLang = lang;
+  }
+
+  function writeUrlState() {
+    const p = new URLSearchParams(location.search);
+    const q = searchInput.value.trim();
+    if (q) p.set("q", q); else p.delete("q");
+    if (state.activeLang && state.activeLang !== "All") p.set("lang", state.activeLang); else p.delete("lang");
+    const qs = p.toString();
+    history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+  }
 
   /* ---------- filters ---------- */
 
@@ -278,20 +327,47 @@
     })();
   }
 
-  /* ---------- reveal on scroll ---------- */
+  /* ---------- reveal on scroll (staggered per group) ---------- */
 
-  function initReveal() {
-    const els = document.querySelectorAll("[data-reveal]");
+  function registerReveals(root = document) {
+    const els = [...root.querySelectorAll("[data-reveal]:not(.in)")];
+    if (!els.length) return;
     if (!("IntersectionObserver" in window) ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       els.forEach((n) => n.classList.add("in"));
       return;
     }
+    for (const n of els) {
+      const group = [...(n.parentElement?.children || [n])].filter((c) => c.hasAttribute?.("data-reveal"));
+      const idx = Math.max(0, group.indexOf(n));
+      n.style.setProperty("--d", `${Math.min(idx, 7) * 80}ms`);
+    }
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }),
-      { threshold: 0.12 }
+      (entries) => entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        en.target.classList.add("in");
+        io.unobserve(en.target);
+      }),
+      { threshold: 0.05, rootMargin: "0px 0px 8% 0px" }
     );
     els.forEach((n) => io.observe(n));
+  }
+
+  /* ---------- nav: highlight the section being read ---------- */
+
+  function initNavHighlight() {
+    const links = [...document.querySelectorAll(".nav-links a")];
+    const byId = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
+    const sections = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+    if (!sections.length || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        for (const a of links) a.removeAttribute("aria-current");
+        byId.get(en.target.id)?.setAttribute("aria-current", "true");
+      }
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    sections.forEach((s) => io.observe(s));
   }
 
   /* ---------- boot ---------- */
@@ -299,7 +375,14 @@
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
+  // "press /" is a keyboard affordance — hide it on touch devices
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    searchInput.placeholder = "Search repositories…";
+  }
+
+  readUrlState();
   initTyping();
-  initReveal();
+  registerReveals();
+  initNavHighlight();
   load();
 })();

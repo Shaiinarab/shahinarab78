@@ -1,6 +1,9 @@
 # Deploys this repository as a GitHub Pages site.
 # Site URL: https://shaiinarab.github.io/shahinarab78/
 #
+# Only the site files ship: internal docs (docs/implementation-artifacts), the BMAD
+# and Claude scaffolding (_bmad, .claude) and build scripts stay out of the artifact.
+#
 # First run: if the deploy job fails with "Pages not enabled",
 # open Settings → Pages and set Source = "GitHub Actions", then re-run.
 
@@ -30,13 +33,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verify before shipping
+        run: node scripts/verify.mjs
+
+      - name: Stage site files
+        run: |
+          mkdir -p _site/data
+          cp index.html 404.html robots.txt sitemap.xml .nojekyll _site/
+          cp -r assets _site/assets
+          cp data/resume.public.json _site/data/
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
