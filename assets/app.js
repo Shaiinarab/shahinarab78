@@ -1,14 +1,20 @@
 /* ============================================================
-   SHAHIN://HUB — live GitHub directory
-   Fetches public repos from api.github.com (unauthenticated),
-   renders a searchable/filterable grid, falls back to a local
-   snapshot when the API is unreachable or rate-limited.
+   SHAHIN://HUB — the machine with a pulse
+   Live GitHub directory + the human layer on top: a terminal
+   that mistypes and fixes itself, handwriting, magnetism,
+   toasts, a paper theme, and one easter egg.
+
+   Self-contained: no external requests. Everything respects
+   prefers-reduced-motion and works without JS (content first).
    ============================================================ */
 "use strict";
 
 (() => {
   const USER = "Shaiinarab";
   const SELF_REPO = "shaiinarab"; // this site's own repo — not listed in the directory
+  const CACHE_KEY = "hub:repos:v1";
+  const THEME_KEY = "hub:theme:v1";
+  const EMAIL = "Shahinarab619@outlook.com";
 
   /* ---------- static data ---------- */
 
@@ -36,16 +42,36 @@
     { name: "to-improve", description: "Notes and experiments for continuous improvement.", language: null, html_url: "https://github.com/Shaiinarab/to-improve", stargazers_count: 0, forks_count: 0, archived: true },
   ];
 
+  // hand-applied seals for repos that deserve a sticker
+  const SEALS = {
+    "repopulse": { text: "privacy first", rot: "-5deg" },
+    "Simorgh-edge-gateway": { text: "the ambitious one", rot: "3deg" },
+    "Ararat-platform": { text: "real club, real users", rot: "-3deg" },
+    "shiraz-bazaar-telegram-bot": { text: "zero cloud cost", rot: "4deg" },
+    "mashreghi_asil": { text: "my WASM baby", rot: "-4deg" },
+  };
+
   const TYPED_PHRASES = [
-    "Systems, tools & practical AI.",
-    "Rust ⚙️ Go 🐹 Python 🐍 TypeScript ⚡",
-    "Edge gateways · developer tooling · real users.",
-    "Ship small. Verify everything. Repeat.",
+    "systems, tools & practical AI.",
+    "rust at 2am, python by daylight.",
+    "I read the docs before I open an issue.",
+    "music first. code second. mostly.",
+    "ship small. verify everything. repeat.",
   ];
 
   /* ---------- tiny helpers ---------- */
 
-  const $ = (sel) => document.querySelector(sel);
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+  const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarse = () => window.matchMedia("(pointer: coarse)").matches;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
 
   const esc = (s) =>
     String(s ?? "").replace(/[&<>"']/g, (c) => ({
@@ -75,6 +101,61 @@
   const forkIcon =
     '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="4" cy="3" r="1.7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="3" r="1.7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="13" r="1.7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 4.9v.6c0 2 1.7 3 4 3s4-1 4-3v-.6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
 
+  /* ---------- toasts ---------- */
+
+  const toastBox = $("#toasts");
+  function toast(msg) {
+    if (!toastBox) return;
+    const t = el("div", "toast", msg);
+    toastBox.appendChild(t);
+    requestAnimationFrame(() => t.classList.add("in"));
+    setTimeout(() => {
+      t.classList.remove("in");
+      setTimeout(() => t.remove(), 320);
+    }, 2600);
+  }
+
+  /* ---------- theme: night (machine) / paper (human) ---------- */
+
+  const root = document.documentElement;
+  const themeBtn = $("#theme-toggle");
+
+  function applyTheme(t, persist = true) {
+    root.dataset.theme = t;
+    if (persist) {
+      try { localStorage.setItem(THEME_KEY, t); } catch { /* private mode */ }
+    }
+    if (themeBtn) {
+      const paper = t === "paper";
+      themeBtn.setAttribute("aria-pressed", String(paper));
+      themeBtn.setAttribute("aria-label", paper ? "Switch to night mode" : "Switch to paper mode");
+      const label = $(".tt-label", themeBtn);
+      if (label) label.textContent = paper ? "paper" : "night";
+      const glyph = $(".tt-glyph", themeBtn);
+      if (glyph) glyph.textContent = paper ? "◐" : "◑";
+    }
+    paintDiagramTheme(t);
+  }
+
+  function initTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch { /* private mode */ }
+    const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+    applyTheme(saved || (prefersLight ? "paper" : "dark"), false);
+    themeBtn?.addEventListener("click", () => {
+      const next = root.dataset.theme === "paper" ? "dark" : "paper";
+      applyTheme(next);
+      toast(next === "paper" ? "paper mode. tell me if it's ugly." : "back to the night shift.");
+    });
+  }
+
+  // the flow diagram ships with dark-theme fills; flip its palette in paper mode
+  function paintDiagramTheme(t) {
+    const img = $(".colophon .flow");
+    if (!img) return;
+    img.style.filter = t === "paper" ? "invert(.92) hue-rotate(180deg) saturate(.85)" : "";
+  }
+
   /* ---------- state ---------- */
 
   const state = {
@@ -87,8 +168,6 @@
   };
 
   /* ---------- snapshot cache (offline fallback stays truthful) ---------- */
-
-  const CACHE_KEY = "hub:snapshot:v1";
 
   function readCache() {
     try {
@@ -119,21 +198,24 @@
   function showSkeletons() {
     grid.setAttribute("aria-busy", "true");
     grid.innerHTML = Array.from({ length: 8 }, () => '<div class="skel"></div>').join("");
-    resultLine.textContent = "syncing with github…";
+    resultLine.textContent = "asking github nicely…";
   }
 
   function repoCard(r) {
     const badges = [
-      r.archived ? '<span class="badge-archived">ARCHIVED</span>' : "",
+      r.archived ? '<span class="badge-archived">RETIRED</span>' : "",
       r.homepage ? '<span class="badge-home">HAS LIVE DEMO</span>' : "",
     ].join(" ");
+    const seal = SEALS[r.name]
+      ? `<span class="seal" style="--rot:${SEALS[r.name].rot}" aria-hidden="true">${esc(SEALS[r.name].text)}</span>`
+      : "";
     return `
       <article class="repo-card${r.archived ? " is-archived" : ""}">
         <a href="${esc(r.html_url)}" target="_blank" rel="noopener noreferrer"
            aria-label="${esc(r.name)} on GitHub">
           <span class="repo-arrow" aria-hidden="true">↗</span>
           <h3 class="repo-name">${esc(r.name)} ${badges}</h3>
-          <p class="repo-desc">${r.description ? esc(r.description) : '<span class="dim">No description yet.</span>'}</p>
+          <p class="repo-desc">${r.description ? esc(r.description) : '<span class="dim">No description yet. I know.</span>'}</p>
           <div class="repo-meta">
             ${r.language ? `<span><span class="lang-dot" style="--lc:${langColor(r.language)}"></span>${esc(r.language)}</span>` : ""}
             <span class="mi">${starIcon}${r.stargazers_count}</span>
@@ -141,6 +223,7 @@
             ${r.pushed_at ? `<span>${relTime(r.pushed_at)}</span>` : ""}
           </div>
         </a>
+        ${seal}
       </article>`;
   }
 
@@ -158,7 +241,7 @@
     grid.setAttribute("aria-busy", "false");
     grid.innerHTML = items.length
       ? items.map(repoCard).join("")
-      : `<p class="empty-state mono">⌁ no repositories match “${esc(searchInput.value)}” — try another signal.</p>`;
+      : `<p class="empty-state mono">⌁ nothing matches “${esc(searchInput.value)}” — try a shorter signal, or just scroll.</p>`;
     resultLine.textContent = state.fromApi
       ? `${items.length} of ${state.repos.length} repositories shown`
       : state.cacheTime
@@ -180,8 +263,8 @@
   /* ---------- stats + terminal slots ---------- */
 
   function fillStats(user, repos) {
-    const set = (name, v) => { const el = document.querySelector(`[data-stat="${name}"]`); if (el) el.textContent = v; };
-    const slot = (name, v) => { const el = document.querySelector(`[data-slot="${name}"]`); if (el) el.textContent = v; };
+    const set = (name, v) => { const elx = document.querySelector(`[data-stat="${name}"]`); if (elx) elx.textContent = v; };
+    const slot = (name, v) => { const elx = document.querySelector(`[data-slot="${name}"]`); if (elx) elx.textContent = v; };
     const langs = new Set(repos.map((r) => r.language).filter(Boolean)).size;
 
     set("repos", user ? String(user.public_repos) : "—");
@@ -194,7 +277,7 @@
     if (sync) {
       sync.classList.remove("dim");
       sync.textContent = state.fromApi
-        ? `✓ synced ${new Date().toLocaleTimeString()} · auto-refreshes on every visit`
+        ? `✓ synced in ${state.syncMs ?? "—"}ms · nothing to hide, nothing to sell`
         : state.cacheTime
           ? `⚠ cached snapshot · last live sync ${new Date(state.cacheTime).toLocaleString()}`
           : "⚠ offline snapshot · will retry next visit";
@@ -230,6 +313,7 @@
   }
 
   async function load() {
+    const t0 = performance.now();
     showSkeletons();
     apiNote.hidden = true;
     try {
@@ -245,6 +329,7 @@
         state.activeLang = "All";
       }
       state.fromApi = true;
+      state.syncMs = Math.round(performance.now() - t0);
       state.cacheTime = Date.now();
       writeCache(state.user, state.repos);
     } catch {
@@ -260,7 +345,16 @@
     fillStats(state.user, state.repos);
   }
 
-  retryBtn.addEventListener("click", load);
+  async function retry() {
+    if (!retryBtn) return;
+    retryBtn.disabled = true;
+    retryBtn.textContent = "syncing…";
+    await load();
+    retryBtn.disabled = false;
+    retryBtn.textContent = "Retry sync ⟳";
+    toast(state.fromApi ? "synced. all good." : "still no luck — showing the snapshot.");
+  }
+  retryBtn?.addEventListener("click", retry);
 
   /* ---------- shareable filter state (?q=&lang=) ---------- */
 
@@ -306,35 +400,134 @@
     searchInput.focus();
   });
 
-  /* ---------- hero typing effect ---------- */
+  /* ---------- hero typing line ---------- */
 
   function initTyping() {
-    const el = $("#typed");
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.textContent = TYPED_PHRASES[0];
+    const typedEl = $("#typed");
+    if (!typedEl) return;
+    if (reduced()) {
+      typedEl.textContent = TYPED_PHRASES[0];
       return;
     }
     let pi = 0, ci = 0, deleting = false;
     (function tick() {
       const phrase = TYPED_PHRASES[pi];
       ci += deleting ? -1 : 1;
-      el.textContent = phrase.slice(0, ci);
+      typedEl.textContent = phrase.slice(0, ci);
       let delay = deleting ? 26 : 52;
-      if (!deleting && ci === phrase.length) { delay = 2200; deleting = true; }
+      if (!deleting && ci === phrase.length) { delay = 2600; deleting = true; }
       else if (deleting && ci === 0) { deleting = false; pi = (pi + 1) % TYPED_PHRASES.length; delay = 420; }
       setTimeout(tick, delay);
     })();
   }
 
+  /* ---------- the living terminal: it mistypes, then fixes itself ---------- */
+
+  const TERM_SCRIPT = [
+    { kind: "cmd", text: "whoami" },
+    { kind: "out", text: "> Shahin Arab — systems tinkerer · Shiraz, Iran" },
+    { kind: "cmd", text: "cat ~/mood.txt" },
+    { kind: "out", text: "> shipping. slightly over-caffeinated." },
+    { kind: "cmd", text: "ls ~/repos | wc -l" },
+    { kind: "out", html: '> <span data-slot="repo-count">…</span> public repositories listed' },
+    { kind: "cmd", text: "sync --with api.github.com", typo: "sybc --wit api.github.com" },
+    { kind: "out", html: '> <span data-slot="sync-status" class="dim">connecting…</span>' },
+    { kind: "aside", text: "# yes, I typo. I also fix." },
+    { kind: "cmd", text: "why" },
+    { kind: "out", text: "> because it annoyed me. that's usually the reason." },
+  ];
+
+  const commonPrefixLen = (a, b) => {
+    let i = 0;
+    while (i < a.length && i < b.length && a[i] === b[i]) i++;
+    return i;
+  };
+
+  async function typeInto(node, text) {
+    for (const ch of text) {
+      node.textContent += ch;
+      await sleep(24 + Math.random() * 46);
+    }
+  }
+
+  async function backspace(node, n) {
+    for (let i = 0; i < n; i++) {
+      node.textContent = node.textContent.slice(0, -1);
+      await sleep(28);
+    }
+  }
+
+  async function runTerminal() {
+    const pre = $("#term-body");
+    if (!pre) return;
+    pre.textContent = "";
+    const rm = reduced();
+
+    for (const step of TERM_SCRIPT) {
+      if (step.kind === "cmd") {
+        const line = el("span", "cmd", "shahin@hub:~$ ");
+        const typed = el("span", "");
+        line.appendChild(typed);
+        pre.appendChild(line);
+        if (rm) {
+          typed.textContent = step.text;
+        } else if (step.typo) {
+          await typeInto(typed, step.typo);
+          await sleep(360);
+          const keep = commonPrefixLen(step.typo, step.text);
+          await backspace(typed, step.typo.length - keep);
+          await typeInto(typed, step.text.slice(keep));
+          await sleep(240);
+        } else {
+          await typeInto(typed, step.text);
+          await sleep(220);
+        }
+      } else {
+        const line = el("span", step.kind === "aside" ? "aside" : "out");
+        if (step.html) line.innerHTML = step.html;
+        else line.textContent = step.text;
+        pre.appendChild(line);
+        if (!rm) await sleep(step.kind === "aside" ? 260 : 380);
+      }
+      pre.append("\n");
+    }
+    const cursor = el("span", "cmd blink", "▊");
+    cursor.setAttribute("aria-hidden", "true");
+    pre.appendChild(cursor);
+    if (!rm) await sleep(9000);
+    runTerminal(); // it's a screensaver; it loops
+  }
+
+  /* ---------- decode/scramble on reveal ---------- */
+
+  const GLYPHS = "#/\\<>=+-*_.:01";
+
+  function decode(node) {
+    const text = node.dataset.text ?? node.textContent;
+    node.dataset.text = text;
+    if (reduced()) { node.textContent = text; return; }
+    const dur = 520;
+    const t0 = performance.now();
+    (function frame(now) {
+      const p = Math.min(1, (now - t0) / dur);
+      const keep = Math.floor(p * text.length);
+      let out = text.slice(0, keep);
+      for (let i = keep; i < text.length; i++) {
+        out += text[i] === " " ? " " : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+      }
+      node.textContent = out;
+      if (p < 1) requestAnimationFrame(frame);
+      else node.textContent = text;
+    })(t0);
+  }
+
   /* ---------- reveal on scroll (staggered per group) ---------- */
 
-  function registerReveals(root = document) {
-    const els = [...root.querySelectorAll("[data-reveal]:not(.in)")];
+  function registerReveals(rootEl = document) {
+    const els = $$("[data-reveal]:not(.in)", rootEl);
     if (!els.length) return;
-    if (!("IntersectionObserver" in window) ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      els.forEach((n) => n.classList.add("in"));
+    if (!("IntersectionObserver" in window) || reduced()) {
+      els.forEach((n) => { n.classList.add("in"); if (n.hasAttribute("data-decode")) decode(n); });
       return;
     }
     for (const n of els) {
@@ -342,21 +535,21 @@
       const idx = Math.max(0, group.indexOf(n));
       n.style.setProperty("--d", `${Math.min(idx, 7) * 80}ms`);
     }
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((en) => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
         if (!en.isIntersecting) return;
         en.target.classList.add("in");
+        if (en.target.hasAttribute("data-decode")) decode(en.target);
         io.unobserve(en.target);
-      }),
-      { threshold: 0.05, rootMargin: "0px 0px 8% 0px" }
-    );
+      });
+    }, { threshold: 0.05, rootMargin: "0px 0px 8% 0px" });
     els.forEach((n) => io.observe(n));
   }
 
   /* ---------- nav: highlight the section being read ---------- */
 
   function initNavHighlight() {
-    const links = [...document.querySelectorAll(".nav-links a")];
+    const links = $$(".nav-links a");
     const byId = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
     const sections = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean);
     if (!sections.length || !("IntersectionObserver" in window)) return;
@@ -370,19 +563,157 @@
     sections.forEach((s) => io.observe(s));
   }
 
+  /* ---------- signal bar (scroll progress) ---------- */
+
+  function initSignal() {
+    const bar = $(".signal");
+    if (!bar) return;
+    let ticking = false;
+    const update = () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      bar.style.setProperty("--scroll", String(max > 0 ? Math.min(1, scrollY / max) : 0));
+      ticking = false;
+    };
+    addEventListener("scroll", () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  }
+
+  /* ---------- time-aware greeting ---------- */
+
+  function initGreeting() {
+    const node = $("[data-greeting]");
+    if (!node) return;
+    const h = new Date().getHours();
+    const part = h < 5 ? "late night" : h < 11 ? "morning" : h < 17 ? "afternoon" : h < 22 ? "evening" : "late night";
+    const local = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    node.innerHTML = `good ${esc(part)}. it's <span class="hl">${esc(local)}</span> where you are — Shiraz says hi.`;
+  }
+
+  /* ---------- pointer joy: parallax, spotlight, magnetic, tilt ---------- */
+
+  function initPointer() {
+    if (reduced() || coarse()) return;
+
+    const fx = $(".fx");
+    const spot = $(".fx-spot");
+    let raf = 0;
+    addEventListener("pointermove", (e) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const nx = e.clientX / innerWidth - 0.5;
+        const ny = e.clientY / innerHeight - 0.5;
+        if (fx) fx.style.transform = `translate(${(-nx * 10).toFixed(2)}px, ${(-ny * 8).toFixed(2)}px)`;
+        if (spot) {
+          spot.style.setProperty("--mx", `${e.clientX}px`);
+          spot.style.setProperty("--my", `${e.clientY}px`);
+          spot.classList.add("on");
+        }
+      });
+    }, { passive: true });
+
+    // magnetic buttons
+    for (const b of $$(".magnetic")) {
+      b.addEventListener("pointermove", (e) => {
+        const r = b.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width / 2) / r.width;
+        const y = (e.clientY - r.top - r.height / 2) / r.height;
+        b.style.transform = `translate(${(x * 8).toFixed(1)}px, ${(y * 6).toFixed(1)}px)`;
+      });
+      b.addEventListener("pointerleave", () => { b.style.transform = ""; });
+    }
+
+    // gentle tilt on the big surfaces
+    for (const t of $$(".tilt")) {
+      t.addEventListener("pointermove", (e) => {
+        if (!t.classList.contains("in") && t.hasAttribute("data-reveal")) return;
+        const r = t.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        t.style.transform = `perspective(900px) rotateX(${(-y * 3.2).toFixed(2)}deg) rotateY(${(x * 3.2).toFixed(2)}deg)`;
+      });
+      t.addEventListener("pointerleave", () => { t.style.transform = ""; });
+    }
+  }
+
+  /* ---------- copy email ---------- */
+
+  function initCopy() {
+    for (const btn of $$("[data-copy]")) {
+      btn.addEventListener("click", async (e) => {
+        // keep the mailto fallback working if the clipboard API is missing
+        if (!navigator.clipboard) return;
+        e.preventDefault();
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy);
+          toast("copied. no takebacks.");
+        } catch {
+          toast("copy failed — the address is in the link.");
+        }
+      });
+    }
+  }
+
+  /* ---------- easter egg: type "shahin" ---------- */
+
+  function initEgg() {
+    let buf = "";
+    addEventListener("keydown", (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
+      if (t instanceof HTMLElement && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      buf = (buf + e.key.toLowerCase()).slice(-12);
+      if (buf.endsWith("shahin")) {
+        applyTheme(root.dataset.theme === "paper" ? "dark" : "paper");
+        toast("hi mom. (found the easter egg)");
+      }
+    });
+
+    let clicks = 0, timer = 0;
+    $(".brand")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      clicks += 1;
+      clearTimeout(timer);
+      timer = setTimeout(() => { clicks = 0; }, 900);
+      if (clicks >= 3) {
+        clicks = 0;
+        applyTheme(root.dataset.theme === "paper" ? "dark" : "paper");
+        toast("fine. paper mode. happy?");
+      }
+    });
+  }
+
+  /* ---------- online / offline life ---------- */
+
+  function initConnection() {
+    addEventListener("offline", () => toast("connection gone. the snapshot has you covered."));
+    addEventListener("online", () => {
+      toast("connection back. syncing.");
+      load();
+    });
+  }
+
   /* ---------- boot ---------- */
 
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  // "press /" is a keyboard affordance — hide it on touch devices
-  if (window.matchMedia("(pointer: coarse)").matches) {
-    searchInput.placeholder = "Search repositories…";
-  }
-
-  readUrlState();
+  initTheme();
+  initGreeting();
+  initSignal();
   initTyping();
   registerReveals();
   initNavHighlight();
-  load();
+  initPointer();
+  initCopy();
+  initEgg();
+  initConnection();
+
+  // "press /" is a keyboard affordance — hide it on touch devices
+  if (coarse()) searchInput.placeholder = "Search repositories…";
+
+  readUrlState();
+  load().then(() => runTerminal());
 })();

@@ -2,14 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- marks JS as available before first paint; reveal animations stay gated on .js -->
-  <script>document.documentElement.classList.add("js");</script>
+  <!-- before first paint: JS capability + saved theme (no flash), reveal system gated on .js -->
+  <script>
+    document.documentElement.classList.add("js");
+    try {
+      var t = localStorage.getItem("hub:theme:v1");
+      if (!t) t = matchMedia("(prefers-color-scheme: light)").matches ? "paper" : "dark";
+      document.documentElement.dataset.theme = t;
+    } catch (e) { document.documentElement.dataset.theme = "dark"; }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shahin Arab — Repo Hub · Systems, Tools &amp; Practical AI</title>
   <meta name="description" content="The front door to every public repository by Shahin Arab — searchable, filtered, and synced live from the GitHub API. Rust, Go, Python, TypeScript, edge tooling and more.">
   <meta name="author" content="Shahin Arab">
-  <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#04070e">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#04070e" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
   <link rel="canonical" href="https://shaiinarab.github.io/shaiinarab/">
 
   <!-- Open Graph / Twitter -->
@@ -60,61 +68,70 @@
 <body>
   <a class="skip-link" href="#top">Skip to content</a>
   <div class="fx" aria-hidden="true"></div>
+  <div class="fx-spot" aria-hidden="true"></div>
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
   <header class="nav" role="banner">
     <div class="shell nav-row">
-      <a class="brand mono" href="#top">SHAHIN<span class="pink">://</span>HUB</a>
+      <a class="brand mono" href="#top" title="click me three times. or don't.">SHAHIN<span class="pink">://</span>HUB</a>
       <nav aria-label="Sections" class="nav-links">
         <a href="#featured">Featured</a>
         <a href="#directory">All repos</a>
         <a href="#demos">Live demos</a>
-        <a href="#colophon">How it works</a>
+        <a href="#offclock">Off the clock</a>
         <a href="#connect">Connect</a>
       </nav>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to paper mode">
+        <span class="tt-glyph" aria-hidden="true">◑</span><span class="tt-label">night</span>
+      </button>
       <a class="btn btn-ghost btn-sm" href="https://github.com/Shaiinarab" target="_blank" rel="noopener">
         <svg viewBox="0 0 16 16" class="ic" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
         GitHub
       </a>
     </div>
+    <div class="signal" aria-hidden="true"></div>
   </header>
 
   <main id="top">
     <!-- ============ HERO ============ -->
     <section class="hero shell" aria-labelledby="hero-title">
       <div class="hero-copy" data-reveal>
-        <p class="eyebrow mono">// REPO DIRECTORY · SYNCED LIVE FROM GITHUB</p>
+        <p class="eyebrow mono" data-reveal data-decode>// REPO DIRECTORY · BUILT BY HAND · SYNCED FROM GITHUB</p>
+        <p class="greeting" data-greeting>hello from Shiraz.</p>
         <h1 id="hero-title" class="display">Shahin&nbsp;<span class="tok">Arab</span></h1>
         <p class="type-line mono" aria-live="off"><span id="typed"></span><span class="caret" aria-hidden="true"></span></p>
         <p class="lead">
-          Systems, tools &amp; practical AI — written across
-          <strong>Rust, Go, Python and TypeScript</strong>.
-          This page is the front door to every public repository:
-          searchable, filtered, and refreshed straight from the GitHub API every time you visit.
+          I build small, sharp things in <strong>Rust, Go, Python and TypeScript</strong>:
+          edge gateways, developer tools, platforms that actual people log into.
+          This page pulls every public repo I have straight from the GitHub API, so it
+          never goes stale. Poke around.
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href="#directory">Browse all repositories <span aria-hidden="true">↓</span></a>
-          <a class="btn btn-ghost" href="#featured">Featured work</a>
+          <a class="btn btn-primary magnetic" href="#directory">Browse all repositories <span aria-hidden="true">↓</span></a>
+          <a class="btn btn-ghost" href="#demos">See what actually runs</a>
         </div>
-        <dl class="stats" aria-label="GitHub account stats">
-          <div><dt>Public repos</dt><dd class="mono" data-stat="repos">—</dd></div>
-          <div><dt>Listed here</dt><dd class="mono" data-stat="listed">—</dd></div>
-          <div><dt>Languages</dt><dd class="mono" data-stat="langs">—</dd></div>
-          <div><dt>Followers</dt><dd class="mono" data-stat="followers">—</dd></div>
-        </dl>
+
+        <div class="stats-wrap">
+          <dl class="stats" aria-label="GitHub account stats">
+            <div><dt>Public repos</dt><dd class="mono" data-stat="repos">—</dd></div>
+            <div><dt>Listed here</dt><dd class="mono" data-stat="listed">—</dd></div>
+            <div><dt>Languages</dt><dd class="mono" data-stat="langs">—</dd></div>
+            <div><dt>Followers</dt><dd class="mono" data-stat="followers">—</dd></div>
+          </dl>
+          <p class="note note-stats" aria-hidden="true">
+            numbers are nice.<br>the work is better.
+            <svg class="doodle" viewBox="0 0 90 34"><path d="M6 26 C 26 30, 52 26, 80 10"/><path d="M68 9 L 81 8 L 78 20"/></svg>
+          </p>
+        </div>
       </div>
 
-      <aside class="terminal" data-reveal aria-label="Live directory status">
+      <aside class="terminal tilt" data-reveal aria-label="Live directory status">
         <div class="term-bar" aria-hidden="true">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="term-title mono">shahin@hub: ~</span>
         </div>
-        <pre class="term-body mono"><span class="cmd">shahin@hub:~$ whoami</span>
-<span class="out">&gt; Shahin Arab — systems tinkerer · Shiraz 🇮🇷</span>
-<span class="cmd">shahin@hub:~$ ls ~/repos | wc -l</span>
-<span class="out">&gt; <span data-slot="repo-count">…</span> public repositories listed</span>
-<span class="cmd">shahin@hub:~$ sync --with api.github.com</span>
-<span class="out">&gt; <span data-slot="sync-status" class="dim">connecting…</span></span>
-<span class="cmd blink" aria-hidden="true">▊</span></pre>
+        <pre class="term-body mono" id="term-body"><span class="cmd">shahin@hub:~$ boot</span>
+<span class="out dim">waking up…</span></pre>
       </aside>
     </section>
 
@@ -122,42 +139,46 @@
     <section id="featured" class="shell section" aria-labelledby="featured-title">
       <div class="sec-head" data-reveal>
         <div>
-          <p class="eyebrow mono">// HAND-PICKED SIGNALS</p>
-          <h2 id="featured-title">Featured repositories</h2>
+          <p class="eyebrow mono" data-reveal data-decode>// HAND-PICKED SIGNALS</p>
+          <h2 id="featured-title" data-reveal data-decode>The ones I'd show you first</h2>
         </div>
-        <p>The builds that best show how I work: small scope, real workflows, verifiable results.</p>
+        <p>Small scope, real workflows, results I can point at. Everything else is below, unfiltered and unstyled.</p>
       </div>
       <div class="featured-grid">
         <article class="feat-card feat-card--pinned" data-reveal>
           <div>
             <div class="feat-path mono">~/featured/repopulse</div>
             <h3><a href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">RepoPulse <span class="arrow" aria-hidden="true">↗</span></a></h3>
-            <p class="feat-desc">Signed GitHub-webhook activity signal with a privacy-filtered public status feed — engineering activity without retaining raw payloads or naming private repos.</p>
+            <p class="feat-desc">Signed GitHub-webhook activity signal with a privacy-filtered public status feed. It proves what I've been building without keeping raw payloads or naming anything private.</p>
           </div>
           <div class="feat-side">
             <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>TypeScript · Cloudflare Workers</div>
             <div class="tags"><span class="tag">Webhooks</span><span class="tag">Privacy-first</span><span class="tag">Workers</span></div>
             <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/repopulse" target="_blank" rel="noopener">Source</a><a class="btn btn-sm btn-ghost" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener">Live status ↗</a></div>
           </div>
+          <p class="note note-pinned" aria-hidden="true">
+            this one runs in prod
+            <svg class="doodle" viewBox="0 0 90 34"><path d="M8 30 C 22 10, 52 6, 82 8"/><path d="M70 3 L 83 8 L 74 16"/></svg>
+          </p>
         </article>
         <article class="feat-card" data-reveal>
           <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>TypeScript · Cloudflare Workers</div>
           <h3><a href="https://github.com/Shaiinarab/Simorgh-edge-gateway" target="_blank" rel="noopener">Simorgh Edge Gateway <span class="arrow" aria-hidden="true">↗</span></a></h3>
-          <p>An agentic edge gateway exploring resilient AI-provider federation — routing, retries and failover at the edge instead of in a datacenter.</p>
+          <p>An agentic edge gateway for resilient AI-provider federation. Routing, retries and failover at the edge, because waiting on one provider is a bad way to build.</p>
           <div class="tags"><span class="tag">AI agents</span><span class="tag">Edge compute</span><span class="tag">Federation</span></div>
           <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/Simorgh-edge-gateway" target="_blank" rel="noopener">Source</a></div>
         </article>
         <article class="feat-card" data-reveal>
           <div class="feat-top mono"><span class="lang-dot" style="--lc:#3178c6"></span>Next.js · Rust · WebAssembly</div>
           <h3><a href="https://github.com/Shaiinarab/mashreghi_asil" target="_blank" rel="noopener">Mashreghi Asil — Luxury Perfume Shop <span class="arrow" aria-hidden="true">↗</span></a></h3>
-          <p>A full-stack luxury e-commerce experiment: Next.js client, Rust API and a WebAssembly scent-packaging module.</p>
+          <p>A full-stack luxury e-commerce experiment: Next.js client, Rust API, and a WebAssembly scent-packaging module nobody asked for. I built it anyway.</p>
           <div class="tags"><span class="tag">Commerce</span><span class="tag">WASM</span><span class="tag">Full-stack</span></div>
           <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/mashreghi_asil" target="_blank" rel="noopener">Source</a></div>
         </article>
         <article class="feat-card" data-reveal>
           <div class="feat-top mono"><span class="lang-dot" style="--lc:#00ADD8"></span>Go · PocketBase</div>
           <h3><a href="https://github.com/Shaiinarab/Ararat-platform" target="_blank" rel="noopener">Ararat Platform <span class="arrow" aria-hidden="true">↗</span></a></h3>
-          <p>A unified management platform for FC Ararat Academy staff, players and members in Shiraz — one login for the whole club's operations.</p>
+          <p>One login for a football academy's staff, players and members in Shiraz. The kind of software that has actual users, which changes how carefully you write it.</p>
           <div class="tags"><span class="tag">Go</span><span class="tag">Management</span><span class="tag">Real users</span></div>
           <div class="feat-links"><a class="btn btn-sm btn-primary" href="https://github.com/Shaiinarab/Ararat-platform" target="_blank" rel="noopener">Source</a></div>
         </article>
@@ -168,10 +189,10 @@
     <section id="directory" class="shell section" aria-labelledby="directory-title">
       <div class="sec-head" data-reveal>
         <div>
-          <p class="eyebrow mono">// AUTO-SYNCED INDEX</p>
-          <h2 id="directory-title">All public repositories</h2>
+          <p class="eyebrow mono" data-reveal data-decode>// AUTO-SYNCED INDEX</p>
+          <h2 id="directory-title" data-reveal data-decode>Everything else I've made public</h2>
         </div>
-        <p>Pulled live from <span class="mono dim">api.github.com/users/Shaiinarab</span>. Publish something new and it appears here on the next visit — no manual updates.</p>
+        <p>Straight from <span class="mono dim">api.github.com</span>, including the half-finished stuff. Publish something new and it shows up here on the next visit.</p>
       </div>
 
       <div class="toolbar" data-reveal>
@@ -191,8 +212,11 @@
       </noscript>
 
       <div class="api-note" id="api-note" hidden>
-        <p><strong>Couldn't reach the GitHub API.</strong> You may be rate-limited or offline — showing the last known snapshot instead.</p>
-        <button class="btn btn-sm btn-ghost" id="retry-btn" type="button">Retry sync ⟳</button>
+        <div>
+          <p><strong>Couldn't reach the GitHub API.</strong> You may be rate-limited or offline — showing the last known snapshot instead.</p>
+          <span class="hand" aria-hidden="true">the internet has moods. I get it.</span>
+        </div>
+        <button class="btn btn-sm btn-ghost magnetic" id="retry-btn" type="button">Retry sync ⟳</button>
       </div>
 
       <div class="repo-grid" id="repo-grid" aria-busy="true"></div>
@@ -202,10 +226,10 @@
     <section id="demos" class="shell section" aria-labelledby="demos-title">
       <div class="sec-head" data-reveal>
         <div>
-          <p class="eyebrow mono">// RUNNING, NOT JUST COMMITTED</p>
-          <h2 id="demos-title">Live demos &amp; endpoints</h2>
+          <p class="eyebrow mono" data-reveal data-decode>// RUNNING, NOT JUST COMMITTED</p>
+          <h2 id="demos-title" data-reveal data-decode>Things you can poke right now</h2>
         </div>
-        <p>Public surfaces you can poke right now — no sign-up, no data collected.</p>
+        <p>Live services, no sign-up, nothing collected. Break them if you can; tell me if you do.</p>
       </div>
       <div class="feed">
         <a class="feed-row" href="https://repopulse.shahino3ozone1353.workers.dev/status" target="_blank" rel="noopener" data-reveal>
@@ -235,17 +259,63 @@
       </div>
     </section>
 
+    <!-- ============ OFF THE CLOCK ============ -->
+    <section id="offclock" class="shell section" aria-labelledby="offclock-title">
+      <div class="offclock">
+        <div data-reveal>
+          <p class="eyebrow mono" data-reveal data-decode>// OFF THE CLOCK</p>
+          <h2 id="offclock-title" data-reveal data-decode>When the laptop closes</h2>
+          <p class="lead">Code is one of my languages. The rest of the person looks something like this.</p>
+          <ul class="offclock-list">
+            <li>
+              <span class="offclock-k">music</span>
+              <div class="offclock-v">
+                <strong>Loud, mostly</strong>
+                <p>Real rap, EDM, nu-metal, jazz when I'm pretending to be calm, and Iranian folklore when I miss home.</p>
+              </div>
+            </li>
+            <li>
+              <span class="offclock-k">fuel</span>
+              <div class="offclock-v">
+                <strong>Arabica, unreasonably strong</strong>
+                <p>There's a cup within reach at almost every commit I've ever made.</p>
+              </div>
+            </li>
+            <li>
+              <span class="offclock-k">night</span>
+              <div class="offclock-v">
+                <strong>Walks through Shiraz</strong>
+                <p>Good debugging happens away from the keyboard. So do the best ideas.</p>
+              </div>
+            </li>
+            <li>
+              <span class="offclock-k">rabbit hole</span>
+              <div class="offclock-v">
+                <strong>GPUs I cannot justify</strong>
+                <p>CUDA, OpenCL, kernel panics, and a shopping cart I never check out.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <aside class="offclock-note" data-reveal>
+          <span class="hand-big">instead of small talk,<br>send me a song.</span>
+          <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p class="dim" style="margin:.9rem 0 0">That's a perfectly good opening line. It usually works better than "hope this email finds you well."</p>
+        </aside>
+      </div>
+    </section>
+
     <!-- ============ COLOPHON ============ -->
     <section id="colophon" class="shell section" aria-labelledby="colophon-title">
       <div class="colophon">
         <div data-reveal>
-          <p class="eyebrow mono">// UNDER THE HOOD</p>
+          <p class="eyebrow mono" data-reveal data-decode>// UNDER THE HOOD</p>
           <h2 id="colophon-title">How this page works</h2>
           <p class="lead">One static page, one public API, zero trackers. The directory is rebuilt in your browser on every visit, so new repositories show up without a redeploy.</p>
           <ul>
             <li>Public GitHub data only — forks and this page's own repo are filtered out.</li>
             <li>If the API is rate-limited or offline, a cached snapshot from your last visit keeps the page useful.</li>
-            <li>No cookies, no analytics, no third-party scripts.</li>
+            <li>No cookies, no analytics, no third-party scripts. The theme you pick is the only thing I remember.</li>
           </ul>
         </div>
         <img class="flow" src="assets/hub-flow.svg" width="960" height="320" loading="lazy" data-reveal
@@ -258,21 +328,27 @@
       <div class="connect-box" data-reveal>
         <div>
           <p class="eyebrow mono">// OPEN CHANNEL</p>
-          <h2 id="connect-title">Connect if you dare</h2>
-          <p class="lead">Instead of talking, send me your favorite track. 🎧 Music speaks what cannot be expressed.</p>
+          <h2 id="connect-title">Say something</h2>
+          <p class="lead">I answer everything eventually. If you'd rather skip the small talk, send a track — that works as an opening line.</p>
         </div>
         <div class="connect-actions">
-          <a class="btn btn-primary" href="https://github.com/Shaiinarab" target="_blank" rel="noopener">GitHub ↗</a>
+          <a class="btn btn-primary magnetic" href="mailto:Shahinarab619@outlook.com?subject=a%20song%20for%20you&body=track%3A%20artist%3A%20why%3A%20">Send a song instead</a>
+          <a class="btn btn-ghost" href="https://github.com/Shaiinarab" target="_blank" rel="noopener">GitHub ↗</a>
           <a class="btn btn-ghost" href="https://www.linkedin.com/in/shaiinarab/" target="_blank" rel="noopener">LinkedIn ↗</a>
-          <a class="btn btn-ghost" href="mailto:Shahinarab619@outlook.com">Email ✉</a>
+          <a class="btn btn-ghost" href="mailto:Shahinarab619@outlook.com" data-copy="Shahinarab619@outlook.com" title="Click to copy the address">Email ✉</a>
         </div>
+        <p class="note note-connect" aria-hidden="true">
+          yes, really
+          <svg class="doodle" viewBox="0 0 80 34"><path d="M74 26 C 52 30, 26 26, 6 12"/><path d="M16 9 L 4 11 L 9 21"/></svg>
+        </p>
       </div>
     </section>
   </main>
 
   <footer class="shell foot">
-    <span class="mono dim">© <span id="year">2026</span> Shahin Arab · Shiraz 🇮🇷</span>
+    <span class="mono dim">© <span id="year">2026</span> Shahin Arab · Shiraz 🇮🇷 · built by hand, deployed by robot</span>
     <span class="foot-links">
+      <span class="hand" aria-hidden="true">hi mom.</span>
       <img src="https://komarev.com/ghpvc/?username=Shaiinarab&amp;color=22e4ff&amp;style=flat-square" alt="profile views" loading="lazy">
       <a class="mono dim" href="https://github.com/Shaiinarab/shaiinarab" target="_blank" rel="noopener">page source ↗</a>
     </span>
