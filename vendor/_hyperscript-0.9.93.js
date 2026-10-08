@@ -1,0 +1,1 @@
+Redirecting to /hyperscript.org@0.9.93/dist/_hyperscript.js
