@@ -1,4 +1,4 @@
-title = "shahinarab78 — gitleaks configuration"
+title = "shaiinarab — gitleaks configuration"
 
 [extend]
 # Start from the upstream default rules, then add repo-specific scoping below.

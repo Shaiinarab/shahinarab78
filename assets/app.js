@@ -8,7 +8,7 @@
 
 (() => {
   const USER = "Shaiinarab";
-  const SELF_REPO = "shahinarab78"; // this site's own repo — not listed in the directory
+  const SELF_REPO = "shaiinarab"; // this site's own repo — not listed in the directory
 
   /* ---------- static data ---------- */
 

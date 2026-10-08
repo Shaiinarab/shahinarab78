@@ -1,7 +1,7 @@
 # 🚀 Deploy Tutorial — Shahin://HUB on GitHub Pages
 
 Step-by-step: take this repository from local workspace → live website at
-**https://shaiinarab.github.io/shahinarab78/**
+**https://shaiinarab.github.io/shaiinarab/**
 
 Everything is already wired up — this repo ships with:
 
@@ -59,7 +59,7 @@ The push triggers `.github/workflows/deploy-pages.yml`.
 
 ## Step 3 — Watch the deploy (first run matters!)
 
-1. Open **https://github.com/Shaiinarab/shahinarab78/actions**
+1. Open **https://github.com/Shaiinarab/shaiinarab/actions**
 2. Click the run named **"Deploy to GitHub Pages"**
 3. Wait ~30–60s for the `deploy` job to turn green ✅
 
@@ -77,7 +77,7 @@ That one-time flip is all it takes. Every later push deploys automatically.
 
 ## Step 4 — Verify it's live
 
-Open **https://shaiinarab.github.io/shahinarab78/** and confirm:
+Open **https://shaiinarab.github.io/shaiinarab/** and confirm:
 
 | Check | Expected |
 |---|---|
@@ -85,7 +85,7 @@ Open **https://shaiinarab.github.io/shahinarab78/** and confirm:
 | Repo grid fills | Your public repos appear with stars/forks |
 | Search + `/` hotkey | Typing filters the grid |
 | Language chips | Clicking one filters by language |
-| Unknown URL e.g. `/shahinarab78/foo` | Themed 404 page with working "Back to the hub" |
+| Unknown URL e.g. `/shaiinarab/foo` | Themed 404 page with working "Back to the hub" |
 | View counter in footer | Increments |
 
 If the grid shows the amber *"Couldn't reach the GitHub API"* banner with a cached snapshot: that's the built-in fallback working — hit **Retry sync ⟳** or reload.
@@ -95,13 +95,13 @@ If the grid shows the amber *"Couldn't reach the GitHub API"* banner with a cach
 ## Step 5 — Make it *usable*: point people at it
 
 1. **Set the homepage** on this repo:
-   `repo → ⚙️ About (top-right) → Website → https://shaiinarab.github.io/shahinarab78/`
+   `repo → ⚙️ About (top-right) → Website → https://shaiinarab.github.io/shaiinarab/`
 2. **Profile README already links it** — the `🌐 ENTER THE HUB` badge in `README.md` now resolves once deployed.
-3. Optional — pin the repo: profile page → **Customize your pins** → select `shahinarab78`.
+3. Optional — pin the repo: profile page → **Customize your pins** → select `shaiinarab`.
 4. Optional — custom domain (e.g. `hub.yourdomain.com`):
    - DNS: `CNAME` record → `Shaiinarab.github.io`
    - Settings → Pages → Custom domain → enter it → enable **Enforce HTTPS**
-   - Add a `CNAME` file containing the domain to the repo root, and update the canonical/sitemap URLs in `index.html`, `robots.txt`, `sitemap.xml`, and `404.html` (they currently hard-code `shaiinarab.github.io/shahinarab78/`)
+   - Add a `CNAME` file containing the domain to the repo root, and update the canonical/sitemap URLs in `index.html`, `robots.txt`, `sitemap.xml`, and `404.html` (they currently hard-code `shaiinarab.github.io/shaiinarab/`)
    - Re-run the workflow
 
 ---
@@ -121,6 +121,6 @@ If the grid shows the amber *"Couldn't reach the GitHub API"* banner with a cach
 |---|---|
 | Actions run fails first time | Settings → Pages → Source = **GitHub Actions** → re-run |
 | Site 404s after green deploy | Wait 1–2 min for CDN propagation; hard-refresh (Ctrl+Shift+R) |
-| Styles look broken on a deep link of the 404 page | Shouldn't happen — stylesheet is absolute (`/shahinarab78/assets/style.css`) |
+| Styles look broken on a deep link of the 404 page | Shouldn't happen — stylesheet is absolute (`/shaiinarab/assets/style.css`) |
 | Workflow doesn't trigger | Confirm `.github/workflows/deploy-pages.yml` exists on `main` and Actions aren't disabled (Settings → Actions) |
 | Old version cached | GitHub Pages CDN caches ~10 min max; browser cache: hard refresh |

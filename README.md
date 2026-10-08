@@ -8,8 +8,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://shaiinarab.github.io/shahinarab78/" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%8C%90_ENTER_THE_HUB-shaiinarab.github.io%2Fshahinarab78-ff0080?style=for-the-badge&labelColor=0D1117" alt="Open the Repo Hub"/></a>
-  <a href="https://github.com/Shaiinarab/shahinarab78/actions/workflows/deploy-pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/Shaiinarab/shahinarab78/deploy-pages.yml?branch=main&style=flat-square&label=pages%20deploy" alt="Pages deploy status"/></a>
+  <a href="https://shaiinarab.github.io/shaiinarab/" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%8C%90_ENTER_THE_HUB-shaiinarab.github.io%2Fshaiinarab-ff0080?style=for-the-badge&labelColor=0D1117" alt="Open the Repo Hub"/></a>
+  <a href="https://github.com/Shaiinarab/shaiinarab/actions/workflows/deploy-pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/Shaiinarab/shaiinarab/deploy-pages.yml?branch=main&style=flat-square&label=pages%20deploy" alt="Pages deploy status"/></a>
 </p>
 
 > 🗂️ **This repository is also my website** — a live repo hub that auto-syncs every public repository from the GitHub API: searchable, filterable, always current.

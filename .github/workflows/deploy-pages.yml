@@ -1,5 +1,5 @@
 # Deploys this repository as a GitHub Pages site.
-# Site URL: https://shaiinarab.github.io/shahinarab78/
+# Site URL: https://shaiinarab.github.io/shaiinarab/
 #
 # Only the site files ship: internal docs (docs/implementation-artifacts), the BMAD
 # and Claude scaffolding (_bmad, .claude) and build scripts stay out of the artifact.

@@ -65,7 +65,7 @@ def main():
     d.rectangle((392, 356, 552, 364), fill=PINK)
     d.text((392, 402), "Systems, tools & practical AI", font=sans_sm, fill=MUTED)
     d.text((392, 456), "Rust · Go · Python · TypeScript", font=sans_sm, fill=MUTED)
-    d.text((392, 528), "shaiinarab.github.io/shahinarab78", font=mono_sm, fill=(120, 180, 255))
+    d.text((392, 528), "shaiinarab.github.io/shaiinarab", font=mono_sm, fill=(120, 180, 255))
 
     img.save("assets/og.png", optimize=True)
     print("wrote assets/og.png", img.size)

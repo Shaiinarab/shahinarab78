@@ -33,7 +33,7 @@ context:
 |----------|--------------|---------------------------|----------------|
 | API success | `api.github.com` reachable | Live repo grid + chips render; stats filled; sync line shows ✓ time | N/A |
 | Rate limited / network fail | fetch rejects or HTTP ≥ 400 | Fallback snapshot renders; amber notice + Retry visible; sync line shows ⚠ offline snapshot | Notice dismissible via successful retry |
-| Forks & self repo | API returns fork entries + `shahinarab78` | Excluded from directory grid | N/A |
+| Forks & self repo | API returns fork entries + `shaiinarab` | Excluded from directory grid | N/A |
 | Archived repo | `archived: true` in payload | Dimmed card with ARCHIVED badge | N/A |
 | Search miss | Query matches nothing | Single empty-state message, no crash | N/A |
 | Stale chip filter | Active language vanishes after resync | Filter resets to All so grid never stays empty from stale state | N/A |
@@ -68,7 +68,7 @@ context:
 
 ## Spec Change Log
 
-- 2026-08-23 review loop (iteration 1): blind-hunter + edge-case-hunter surfaced two HIGH defects — relative stylesheet/nav hrefs on 404.html break because GitHub Pages serves the 404 document at every missing path depth, and "/" resolves to the account origin root rather than this project site. Amended to absolute /shahinarab78/ paths. Known-bad state avoided: unstyled, dead-end error page on deep links. KEEP: absolute-path strategy on any future 404/platform pages. Additional patches: fetch timeout guard (12s) prevents infinite skeleton state; decorative terminal cursor aria-hidden. Deferred: og:image external dependency; whether _bmad/.claude scaffolding should ship in the Pages artifact (human decision).
+- 2026-08-23 review loop (iteration 1): blind-hunter + edge-case-hunter surfaced two HIGH defects — relative stylesheet/nav hrefs on 404.html break because GitHub Pages serves the 404 document at every missing path depth, and "/" resolves to the account origin root rather than this project site. Amended to absolute /shaiinarab/ paths. Known-bad state avoided: unstyled, dead-end error page on deep links. KEEP: absolute-path strategy on any future 404/platform pages. Additional patches: fetch timeout guard (12s) prevents infinite skeleton state; decorative terminal cursor aria-hidden. Deferred: og:image external dependency; whether _bmad/.claude scaffolding should ship in the Pages artifact (human decision).
 - 2026-08-23 process note: Checkpoint 1 approval delegated by user directive ("use them to continue this run to perfection"); proceeding [A]. VCS dirty-tree continuity accepted — the uncommitted hub IS the subject intent. KEEP: existing visual identity, zero-dependency constraint.
 
 ## Verification
@@ -99,7 +99,7 @@ context:
 - Absolute asset path — the 404 document renders at *any* missing depth
   [`404.html:11`](../../404.html#L11)
 
-- Hub-root links use /shahinarab78/, not "/", which is the account origin
+- Hub-root links use /shaiinarab/, not "/", which is the account origin
   [`404.html:24`](../../404.html#L24)
 
 **Perf + accessibility polish**

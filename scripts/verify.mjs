@@ -3,7 +3,7 @@
 // Run: node scripts/verify.mjs   → exit 0 green / 1 red.
 import { readFileSync, statSync } from "node:fs";
 
-const CANON = "https://shaiinarab.github.io/shahinarab78/";
+const CANON = "https://shaiinarab.github.io/shaiinarab/";
 const failures = [];
 
 function check(id, ok, detail = "") {
@@ -47,9 +47,9 @@ try {
 check("index:jsonld-parses", jsonldOk);
 
 /* ---- 404.html ---- */
-check("404:absolute-stylesheet", notFound.includes('href="/shahinarab78/assets/style.css"'));
-check("404:no-root-relative-links", !/\bhref="\/"(?!shahinarab78)/.test(notFound));
-check("404:canonical-back-link", notFound.includes('href="/shahinarab78/"'));
+check("404:absolute-stylesheet", notFound.includes('href="/shaiinarab/assets/style.css"'));
+check("404:no-root-relative-links", !/\bhref="\/"(?!shaiinarab)/.test(notFound));
+check("404:canonical-back-link", notFound.includes('href="/shaiinarab/"'));
 
 /* ---- crawler files ---- */
 check("robots:sitemap-matches-canon", robots.trim().endsWith(`Sitemap: ${CANON}sitemap.xml`));
@@ -78,7 +78,14 @@ check("workflow:stages-site-dir", /path:\s*_site/.test(workflow));
 check("workflow:no-whole-repo-upload", !/path:\s*\.\s*$/m.test(workflow));
 
 /* ---- README widget correctness (the account is Shaiinarab) ---- */
-check("readme:no-nonexistent-account-widgets", !/(?:username|user)=shahinarab78|ghchart\.rshah\.org\/[^/\s]+\/shahinarab78/.test(readme));
+const widgetUsers = [...readme.matchAll(/(?:username|user)=([A-Za-z0-9-]+)/g)].map((m) => m[1]);
+const chartUsers = [...readme.matchAll(/ghchart\.rshah\.org\/[0-9a-f]+\/([A-Za-z0-9-]+)/g)].map((m) => m[1]);
+const wrongUsers = [...widgetUsers, ...chartUsers].filter((u) => u.toLowerCase() !== "shaiinarab");
+check(
+  "readme:all-widgets-target-the-account",
+  widgetUsers.length >= 4 && wrongUsers.length === 0,
+  `${widgetUsers.length + chartUsers.length} widgets${wrongUsers.length ? ` — wrong: ${wrongUsers.join(",")}` : ""}`
+);
 check("readme:stats-use-real-account", readme.includes("username=Shaiinarab") && readme.includes("user=Shaiinarab") && readme.includes("ghchart.rshah.org/ff0080/Shaiinarab"));
 check("readme:no-deprecated-hosts", !/readme-typing-svg\.herokuapp\.com|github-readme-streak-stats\.herokuapp\.com|github-profile-trophy\.vercel\.app/.test(readme));
 check("readme:flow-diagram-linked", readme.includes("assets/hub-flow.svg"));
