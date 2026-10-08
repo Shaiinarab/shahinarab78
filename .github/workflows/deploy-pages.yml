@@ -1,8 +1,11 @@
 # Deploys this repository as a GitHub Pages site.
 # Site URL: https://shaiinarab.github.io/shaiinarab/
 #
-# Only the site files ship: internal docs (docs/implementation-artifacts), the BMAD
-# and Claude scaffolding (_bmad, .claude) and build scripts stay out of the artifact.
+# Two jobs:
+#   refresh-snapshot — weekly/dispatch only: regenerates FALLBACK_REPOS from the
+#     live GitHub API using the GITHUB_PAT repo secret, opens a PR if it drifted.
+#   deploy — verifies with scripts/verify.mjs, then ships ONLY the site files;
+#     internal docs, BMAD/Claude scaffolding and scripts stay out of the artifact.
 #
 # First run: if the deploy job fails with "Pages not enabled",
 # open Settings → Pages and set Source = "GitHub Actions", then re-run.
@@ -12,6 +15,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "17 6 * * 2" # weekly (Tue ~06:17 UTC): refresh the offline snapshot from the API
   workflow_dispatch:
 
 permissions:
@@ -24,7 +29,55 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Keeps FALLBACK_REPOS in assets/app.js current with the live GitHub API,
+  # authenticated via GITHUB_PAT (repo secret) so we never burn the 60/hr
+  # anonymous limit. Opens a PR only when the snapshot actually drifts.
+  refresh-snapshot:
+    if: ${{ github.event_name != 'push' }}
+    runs-on: ubuntu-latest
+    outputs:
+      refreshed-sha: ${{ steps.pr.outputs.commit }}
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh snapshot from the GitHub API
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+        run: python3 scripts/refresh-snapshot.py
+
+      - name: Verify after refresh
+        run: node scripts/verify.mjs
+
+      - name: Open PR if snapshot changed
+        id: pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_PAT }}
+          branch: chore/refresh-offline-snapshot
+          delete-branch: true
+          title: "chore(hub): refresh offline repo snapshot"
+          body: >
+            Automated weekly sync of FALLBACK_REPOS (assets/app.js) and the
+            sitemap lastmod against the live GitHub API via
+            scripts/refresh-snapshot.py using GITHUB_PAT. No manual edits needed —
+            merge to keep the visitors' offline fallback honest.
+          commit-message: "chore(hub): refresh offline repo snapshot [skip ci]"
+
   deploy:
+    # push: deploy right away (refresh is skipped, nothing changed to ship).
+    # workflow_dispatch: redeploy current main after the refresh check passes.
+    # schedule: refresh + PR only — no point deploying unchanged files.
+    needs: refresh-snapshot
+    if: ${{ github.event_name != 'schedule' && needs.refresh-snapshot.result != 'failure' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -32,6 +85,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # on scheduled/dispatch runs, ship the refreshed commit if one exists
+          ref: ${{ needs.refresh-snapshot.outputs.refreshed-sha || github.ref }}
+          persist-credentials: false
 
       - name: Verify before shipping
         run: node scripts/verify.mjs

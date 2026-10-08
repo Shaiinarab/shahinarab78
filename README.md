@@ -24,6 +24,16 @@
 - **Live sync** — your browser calls the GitHub API on every visit; new repos appear without a redeploy. Rate-limited or offline? A cached snapshot from your last visit takes over.
 - **Privacy by construction** — public data only, forks and this repo filtered out, nothing stored on a server.
 - **Deploy** — every push to `main` ships the site files to GitHub Pages via `.github/workflows/deploy-pages.yml`.
+- **Snapshot freshness** — a weekly scheduled run (same workflow) calls `scripts/refresh-snapshot.py`, which reads `GITHUB_PAT` from the environment, pulls the live repo list at authenticated rate limits, and opens a PR if the built-in snapshot drifted. The token never reaches the browser: `assets/app.js` only attaches an `Authorization` header when it detects a Node/CI environment (`typeof process`).
+
+### Tooling
+
+| Command | What it does |
+|---|---|
+| `node scripts/verify.mjs` | Red/green check battery over the whole repo (runs in CI before every deploy). |
+| `python3 scripts/refresh-snapshot.py [--dry-run]` | Regenerate `FALLBACK_REPOS` + sitemap `lastmod` from the API. Requires `GITHUB_PAT` in the env. |
+| `python3 scripts/gen-og.py` | Re-render `assets/og.png` (1200×630 social card) locally — no external services. |
+| `node scripts/validate-resume.cjs data/resume.public.json` | Schema + privacy lint for the public résumé snapshot. |
 
 </details>
 
