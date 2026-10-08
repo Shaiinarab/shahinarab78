@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 """Regenerate assets/og.png (1200x630 social preview card).
 
-Self-hosted so the site keeps its zero-external-request rule. Run:
-    python3 scripts/gen-og.py
+Self-hosted so the site keeps its zero-external-request rule. The repo count
+line is pulled live from the GitHub API using GITHUB_PAT from the environment
+(required); pass --repos N to skip the network entirely. Run:
+    GITHUB_PAT=ghp_xxx python3 scripts/gen-og.py
+    python3 scripts/gen-og.py --repos 15   # offline override
 """
+import argparse
+import json
+import os
+import re
+import sys
+import urllib.request
+
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1200, 630
@@ -16,12 +26,73 @@ MUTED = (147, 164, 195)
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation"
 
+USER = "Shaiinarab"
+SELF_REPO = "shaiinarab"  # the hub repo itself is not listed in the directory
+
+
+def live_repo_count(pat: str) -> int:
+    """Non-fork public repo count, authenticated with GITHUB_PAT (env)."""
+    url = f"https://api.github.com/users/{USER}/repos?per_page=100"
+    req = urllib.request.Request(url, headers={
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {pat}",  # stays in memory; never written to disk
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "shaiinarab-hub-og",
+    })
+    total, pages, link = 0, 0, url
+    while link and pages < 10:
+        with urllib.request.urlopen(link, timeout=30) as res:
+            total += len(json.loads(res.read()))
+            link = re.search(r'<([^>]+)>;\s*rel="next"', res.headers.get("Link", "") or "")
+            link = link.group(1) if link else None
+        pages += 1
+    return sum(1 for _ in range(total)) - 0  # placeholder replaced below
+
+
+def count_repos(pat: str) -> int:
+    repos, url, pages = [], None, 0
+    url = f"https://api.github.com/users/{USER}/repos?per_page=100"
+    while url and pages < 10:
+        req = urllib.request.Request(url, headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {pat}",  # stays in memory; never written to disk
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "shaiinarab-hub-og",
+        })
+        try:
+            with urllib.request.urlopen(req, timeout=30) as res:
+                repos.extend(json.loads(res.read()))
+                nxt = re.search(r'<([^>]+)>;\s*rel="next"', res.headers.get("Link", "") or "")
+                url = nxt.group(1) if nxt else None
+        except Exception as e:
+            print(f"ERROR: GitHub API call failed: {e}\n"
+                  "       Pass --repos N to generate without network access.", file=sys.stderr)
+            sys.exit(1)
+        pages += 1
+    return len([r for r in repos if not r["fork"] and r["name"] != SELF_REPO])
+
 
 def font(name, size):
     return ImageFont.truetype(f"{FONT_DIR}/{name}", size)
 
 
 def main():
+    ap = argparse.ArgumentParser(description="Render assets/og.png")
+    ap.add_argument("--repos", type=int, default=None,
+                    help="repo count override (skips the live API call)")
+    args = ap.parse_args()
+
+    if args.repos is not None:
+        n_repos = args.repos
+    else:
+        pat = os.environ.get("GITHUB_PAT")
+        if not pat:
+            print("ERROR: GITHUB_PAT is not set in the environment — required for the "
+                  "live repo count (or pass --repos N).", file=sys.stderr)
+            sys.exit(1)
+        n_repos = count_repos(pat)
+        print(f"live count: {n_repos} listed repos")
+
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
 

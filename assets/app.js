@@ -26,27 +26,31 @@
     PHP: "#4F5D95", Lua: "#000080", Dart: "#00B4AB", Nix: "#7ad3d4",
   };
 
-  // Offline / rate-limited snapshot (kept roughly current with the account).
+  // Offline / rate-limited snapshot — regenerated from the live GitHub API by
+  // `python3 scripts/refresh-snapshot.py` (uses GITHUB_PAT; CI keeps it fresh).
   const FALLBACK_REPOS = [
-    { name: "portfolio-context", description: "Minimal public-safe portfolio context API on Cloudflare Workers.", language: "JavaScript", html_url: "https://github.com/Shaiinarab/portfolio-context", stargazers_count: 0, forks_count: 0, archived: false },
-    { name: "repopulse", description: "Signed GitHub-webhook activity signal with a privacy-filtered public status feed.", language: "TypeScript", html_url: "https://github.com/Shaiinarab/repopulse", stargazers_count: 0, forks_count: 0, archived: false, homepage: "https://repopulse.shahino3ozone1353.workers.dev/status" },
-    { name: "Simorgh-edge-gateway", description: "Agentic edge gateway for resilient AI-provider federation on Cloudflare Workers.", language: "TypeScript", html_url: "https://github.com/Shaiinarab/Simorgh-edge-gateway", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "simorgh", description: "Free-to-run, no-KYC, self-evolving agentic AI gateway that federates fragmented free tiers into one resilient flock.", language: "TypeScript", html_url: "https://github.com/Shaiinarab/simorgh", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "mch", description: "MiMo Claw Harness", language: null, html_url: "https://github.com/Shaiinarab/mch", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "pabetoop-club", description: "White-label membership, subscription and billing platform for sports clubs and academies — Go + PocketBase, one binary, Persian RTL UI. Template repository.", language: "Go", html_url: "https://github.com/Shaiinarab/pabetoop-club", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "pabetoop-league", description: "White-label youth competition platform: fixtures, results, standings and admin — Go + SQLite, one binary, Persian RTL UI. Template repository.", language: "Go", html_url: "https://github.com/Shaiinarab/pabetoop-league", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "portfolio-context", description: "Minimal public-safe portfolio context API on Cloudflare Workers", language: "JavaScript", html_url: "https://github.com/Shaiinarab/portfolio-context", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "repopulse", description: null, language: "TypeScript", html_url: "https://github.com/Shaiinarab/repopulse", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "Simorgh-edge-gateway", description: "ARCHIVED — Simorgh v1 edge gateway. Development moved to Shaiinarab/simorgh (canonical).", language: "TypeScript", html_url: "https://github.com/Shaiinarab/Simorgh-edge-gateway", stargazers_count: 0, forks_count: 0, archived: true },
     { name: "Data_Structure_And_Intro_To_Algorithms.CLRS", description: "Python mini-homework solutions for a Data Structures and Algorithms course.", language: "Python", html_url: "https://github.com/Shaiinarab/Data_Structure_And_Intro_To_Algorithms.CLRS", stargazers_count: 0, forks_count: 0, archived: false },
-    { name: "Data-struct-and-intro-to-algo-final-project", description: "Queue and stack simulations in Python, with CLI and Tkinter interfaces.", language: "Python", html_url: "https://github.com/Shaiinarab/Data-struct-and-intro-to-algo-final-project", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "Data-struct-and-Intro-to-algo-final-project", description: "Queue and stack simulations in Python, with CLI and Tkinter interfaces for a data structures course.", language: "Python", html_url: "https://github.com/Shaiinarab/Data-struct-and-Intro-to-algo-final-project", stargazers_count: 0, forks_count: 0, archived: false },
     { name: "mashreghi_asil", description: "Full-stack luxury perfume e-commerce platform built with Next.js, Rust, and WebAssembly.", language: "TypeScript", html_url: "https://github.com/Shaiinarab/mashreghi_asil", stargazers_count: 0, forks_count: 0, archived: false },
     { name: "Log-Sentinel", description: "Python command-line tool for ingesting and analyzing system and application log files.", language: "Python", html_url: "https://github.com/Shaiinarab/Log-Sentinel", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "shiraz-bazaar-telegram-bot", description: "Persian-first Telegram price bot with resilient [tgju.org](https://tgju.org) scraper, SQLite alerts, and automatic fallback — no cloud costs.", language: null, html_url: "https://github.com/Shaiinarab/shiraz-bazaar-telegram-bot", stargazers_count: 0, forks_count: 0, archived: false },
+    { name: "Mashreghi-asil", description: "a website for a perfume onlineshop", language: null, html_url: "https://github.com/Shaiinarab/Mashreghi-asil", stargazers_count: 0, forks_count: 0, archived: true },
     { name: "Falcons", description: "Resources and applications for the Falcon Persian-language project.", language: null, html_url: "https://github.com/Shaiinarab/Falcons", stargazers_count: 0, forks_count: 0, archived: false },
-    { name: "Ararat-platform", description: "Unified management platform for FC Ararat Academy staff, players, and members in Shiraz, Iran.", language: "Go", html_url: "https://github.com/Shaiinarab/Ararat-platform", stargazers_count: 0, forks_count: 0, archived: false },
-    { name: "shiraz-bazaar-telegram-bot", description: "Persian-first Telegram price bot with resilient tgju.org scraper, SQLite alerts, and automatic fallback — no cloud costs.", language: null, html_url: "https://github.com/Shaiinarab/shiraz-bazaar-telegram-bot", stargazers_count: 0, forks_count: 0, archived: false },
-    { name: "Mashreghi-asil", description: "A website for a perfume online shop. (Superseded by mashreghi_asil.)", language: null, html_url: "https://github.com/Shaiinarab/Mashreghi-asil", stargazers_count: 0, forks_count: 0, archived: true },
-    { name: "to-improve", description: "Notes and experiments for continuous improvement.", language: null, html_url: "https://github.com/Shaiinarab/to-improve", stargazers_count: 0, forks_count: 0, archived: true },
+    { name: "to-improve", description: "varius ways to improve", language: null, html_url: "https://github.com/Shaiinarab/to-improve", stargazers_count: 0, forks_count: 0, archived: true },
   ];
 
   // hand-applied seals for repos that deserve a sticker
   const SEALS = {
     "repopulse": { text: "privacy first", rot: "-5deg" },
-    "Simorgh-edge-gateway": { text: "the ambitious one", rot: "3deg" },
-    "Ararat-platform": { text: "real club, real users", rot: "-3deg" },
+    "simorgh": { text: "the ambitious one", rot: "3deg" },
+    "pabetoop-club": { text: "real clubs, real users", rot: "-3deg" },
     "shiraz-bazaar-telegram-bot": { text: "zero cloud cost", rot: "4deg" },
     "mashreghi_asil": { text: "my WASM baby", rot: "-4deg" },
   };
@@ -301,11 +305,29 @@
     return m ? m[1] : null;
   }
 
+  // Shared request headers. In a browser this is just the versioning Accept
+  // header — never embed a PAT client-side, it would leak to every visitor.
+  // On CI (Node ≥ 18) the same code path runs with GITHUB_PAT in the
+  // environment, which scripts/refresh-snapshot.py uses to keep the offline
+  // snapshot current at authenticated rate limits instead of 60/hr.
+  const GH_VERSION = "2022-11-28";
+  function ghHeaders(extra = {}) {
+    // `typeof process` is only true outside the browser (Node/CI) — visitors
+    // never see an Authorization header, so a PAT can't leak client-side.
+    const pat = typeof process !== "undefined" && process.env?.GITHUB_PAT;
+    return {
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": GH_VERSION,
+      ...(pat ? { Authorization: `Bearer ${pat}` } : {}),
+      ...extra,
+    };
+  }
+
   async function fetchAllRepos() {
     let url = `https://api.github.com/users/${USER}/repos?per_page=100&sort=pushed`;
     const all = [];
-    for (let page = 0; page < 3 && url; page++) { // cap guards against pathological loops
-      const res = await fetch(url, { headers: { Accept: "application/vnd.github+json" }, signal: reqSignal() });
+    for (let page = 0; page < 10 && url; page++) { // cap guards against pathological loops
+      const res = await fetch(url, { headers: ghHeaders(), signal: reqSignal() });
       all.push(...(await getJson(res)));
       url = nextPageUrl(res.headers.get("Link"));
     }
@@ -317,11 +339,11 @@
     showSkeletons();
     apiNote.hidden = true;
     try {
-      const [userRes, repos] = await Promise.all([
-        fetch(`https://api.github.com/users/${USER}`, { headers: { Accept: "application/vnd.github+json" }, signal: reqSignal() }),
-        fetchAllRepos(),
-      ]);
-      const user = await getJson(userRes);
+      const userP = fetch(`https://api.github.com/users/${USER}`, { headers: ghHeaders(), signal: reqSignal() })
+        .then(getJson)
+        .catch(() => null); // profile stats are nice-to-have; never sink the grid for them
+      const repos = await fetchAllRepos();
+      const user = await userP;
       state.user = user;
       state.repos = repos.filter((r) => !r.fork && r.name !== SELF_REPO);
       // A language chip that no longer exists would silently empty the grid.
