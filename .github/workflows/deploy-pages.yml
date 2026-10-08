@@ -77,7 +77,8 @@ jobs:
     # workflow_dispatch: redeploy current main after the refresh check passes.
     # schedule: refresh + PR only — no point deploying unchanged files.
     needs: refresh-snapshot
-    if: ${{ github.event_name != 'schedule' && needs.refresh-snapshot.result != 'failure' }}
+    # push deploys must never wait on the snapshot job — it only runs on schedule/dispatch
+    if: ${{ github.event_name == 'push' || (github.event_name != 'schedule' && needs.refresh-snapshot.result != 'failure') }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -99,6 +100,7 @@ jobs:
           cp index.html 404.html robots.txt sitemap.xml .nojekyll _site/
           cp -r assets _site/assets
           cp data/resume.public.json _site/data/
+          cp -r vendor _site/vendor
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

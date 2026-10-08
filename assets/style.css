@@ -203,6 +203,9 @@ img { max-width: 100%; }
   transition: border-color .18s ease, background .18s ease, transform .18s var(--ease-spring);
 }
 .theme-toggle:hover { border-color: var(--cyan); background: rgba(34, 228, 255, .1); transform: translateY(-1px); }
+/* press pulse driven by _hyperscript (vendor/_hyperscript-0.9.93.js) */
+.theme-toggle.press { transform: scale(.86); }
+.theme-toggle { transition: transform 90ms ease-out, border-color .2s, background .2s; }
 /* scroll progress = signal strength */
 .signal {
   position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%;

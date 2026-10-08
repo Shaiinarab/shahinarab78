@@ -23,6 +23,7 @@
 - **`index.html` + `assets/`** — the hub itself. No build step, no framework, no cookies.
 - **Live sync** — your browser calls the GitHub API on every visit; new repos appear without a redeploy. Rate-limited or offline? A cached snapshot from your last visit takes over.
 - **Privacy by construction** — public data only, forks and this repo filtered out, nothing stored on a server.
+- **Gen-UI runtime stack** — vendored `htmx 4.0.0` (preview), `Alpine.js 3.17`, `_hyperscript 0.9.93` and the `Tailwind v4.3` browser build live in `/vendor`; the page boots with zero CDN calls and stays functional offline.
 - **Deploy** — every push to `main` ships the site files to GitHub Pages via `.github/workflows/deploy-pages.yml`.
 - **Snapshot freshness** — a weekly scheduled run (same workflow) calls `scripts/refresh-snapshot.py`, which reads `GITHUB_PAT` from the environment, pulls the live repo list at authenticated rate limits, and opens a PR if the built-in snapshot drifted. The token never reaches the browser: `assets/app.js` only attaches an `Authorization` header when it detects a Node/CI environment (`typeof process`).
 
