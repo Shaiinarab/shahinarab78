@@ -1,1 +1,2 @@
-.coverage
+.coverage.git/info/exclude-local
+.claude/skills/**/.coverage
